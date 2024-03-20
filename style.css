@@ -1,0 +1,57 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: cursive, sans-serif;
+    background: rgb(20,20,20);
+    color: white
+}
+
+header {
+    background-color: gray;
+    text-align: center;
+    position: fixed;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    margin-top: -50px;
+}
+
+header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+header a {
+    margin: 10px;
+    color: white;
+    text-decoration: none;
+}
+
+header a:hover {
+    color: blue;
+}
+
+h1 {
+    font-size: 35px;
+    color: blue;
+}
+
+h2 {
+    color: cyan;
+}
+
+.margin {
+    padding: 15px;
+    margin-top: 50px;
+    width: 500px;
+    padding-top: 50px;
+}
+
+#download a {
+    color: yellow;
+}
