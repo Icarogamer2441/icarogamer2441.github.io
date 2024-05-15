@@ -1,0 +1,58 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: sans-serif, Arial;
+}
+
+header {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    background-color: rgb(200,200,200);
+}
+
+.learn-box {
+    background-color: aqua;
+    padding: 10px;
+    border-radius: 10px;
+    margin: 5px;
+}
+
+.code {
+    padding: 5px;
+    background-color: rgb(200,200,200);
+    font-family: 'Courier New';
+}
+
+.code p {
+    white-space: pre;
+}
+
+#github {
+    background-color: blue;
+    margin: 20px;
+    padding: 10px;
+    color: white;
+    border-radius: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#github h1 a {
+    color: black;
+    text-decoration: none;
+}
+
+.exer-box {
+    background-color: lime;
+    padding: 10px;
+    border-radius: 10px;
+    margin: 5px;
+}
