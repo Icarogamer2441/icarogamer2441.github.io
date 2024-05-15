@@ -56,3 +56,7 @@ header {
     border-radius: 10px;
     margin: 5px;
 }
+
+summary {
+    cursor: pointer;
+}
