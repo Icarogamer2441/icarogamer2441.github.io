@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Treine o seu bot</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            background-color: #f4f4f4;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            height: 100vh;
+        }
+        .sidebar {
+            width: 100%;
+            background-color: #1a1a1a;
+            color: #fff;
+            padding: 20px;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            border-radius: 10px;
+        }
+        .chat-container {
+            flex: 1;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+            padding: 20px;
+        }
+        .chat-messages {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            overflow-y: auto;
+            max-height: 400px;
+        }
+        .user-message, .bot-message {
+            padding: 10px 20px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+        .user-message {
+            background-color: #cce6ff;
+            align-self: flex-end;
+        }
+        .bot-message {
+            background-color: #e6f2ff;
+            align-self: flex-start;
+        }
+        .qa-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        .qa-item {
+            margin-bottom: 10px;
+        }
+        .qa-item button {
+            background-color: #fff;
+            color: #1a1a1a;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .qa-item button:hover {
+            background-color: #f0f0f0;
+        }
+        .input-container {
+            display: flex;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+        .input-container input, .input-container textarea {
+            flex: 1;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        .input-container button {
+            padding: 8px 15px;
+            border: none;
+            background-color: #4CAF50;
+            color: #fff;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .input-container button:hover {
+            background-color: #45a049;
+        }
+
+        /* Media queries para tornar o site responsivo */
+        @media screen and (min-width: 768px) {
+            .container {
+                flex-direction: row;
+                height: auto;
+            }
+            .sidebar {
+                width: 300px;
+                margin-right: 20px;
+                align-self: flex-start;
+            }
+            .chat-container {
+                flex: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="sidebar">
+        <h2 style="margin-bottom: 20px;">Treine o seu bot</h2>
+        <ul class="qa-list" id="qa-list"></ul>
+        <div class="input-container">
+            <input type="text" id="new-question" placeholder="Nova Pergunta" style="margin-bottom: 10px;">
+            <input type="text" id="new-answer" placeholder="Nova Resposta" style="margin-bottom: 10px;">
+            <button onclick="addQuestionAnswer()" style="width: 100%;">Adicionar <i class="fas fa-plus"></i></button>
+        </div>
+        <div class="input-container">
+            <textarea id="export-input" placeholder="Exportar aprendizado..." style="margin-bottom: 10px;"></textarea>
+            <button onclick="exportLearning()">Exportar <i class="fas fa-file-export"></i></button>
+        </div>
+        <div class="input-container">
+            <textarea id="import-input" placeholder="Importar aprendizado..." style="margin-bottom: 10px;"></textarea>
+            <button onclick="importLearning()">Importar <i class="fas fa-file-import"></i></button>
+        </div>
+    </div>
+    <div class="chat-container">
+        <ul class="chat-messages" id="chat-messages"></ul>
+        <div class="input-container">
+            <input type="text" id="user-input" placeholder="Digite sua mensagem...">
+            <button onclick="sendMessage()">Enviar</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Função para enviar mensagem do usuário
+    function sendMessage() {
+        const userInput = document.getElementById("user-input").value;
+        if (userInput.trim() !== "") {
+            appendMessage("user", userInput);
+            generateResponse(userInput);
+            document.getElementById("user-input").value = "";
+        }
+    }
+
+    // Função para gerar resposta do chatbot
+    function generateResponse(userInput) {
+        const qaPairs = loadQuestionAnswers();
+        for (let i = 0; i < qaPairs.length; i++) {
+            if (userInput.toLowerCase().includes(qaPairs[i].question.toLowerCase())) {
+                appendMessage("bot", qaPairs[i].answer);
+                return;
+            }
+        }
+        appendMessage("bot", "Desculpe, eu não entendi sua pergunta.");
+    }
+
+    // Função para adicionar mensagem ao chat
+    function appendMessage(sender, message) {
+        const chatMessages = document.getElementById("chat-messages");
+        const li = document.createElement("li");
+        li.className = sender + "-message";
+        li.textContent = message;
+        chatMessages.appendChild(li);
+    }
+
+    // Função para carregar perguntas e respostas do navegador local
+    function loadQuestionAnswers() {
+        const storedQAPairs = localStorage.getItem("customQAPairs");
+        return storedQAPairs ? JSON.parse(storedQAPairs) : [];
+    }
+
+    // Função para salvar nova pergunta e resposta no navegador local
+    function saveQuestionAnswer(question, answer) {
+        const qaPairs= loadQuestionAnswers();
+        qaPairs.push({ question: question, answer: answer });
+        localStorage.setItem("customQAPairs", JSON.stringify(qaPairs));
+        updateQAPanel();
+    }
+
+    // Função para remover pergunta e resposta do navegador local
+    function removeQuestionAnswer(index) {
+        const qaPairs = loadQuestionAnswers();
+        qaPairs.splice(index, 1);
+        localStorage.setItem("customQAPairs", JSON.stringify(qaPairs));
+        updateQAPanel();
+    }
+
+    // Função para atualizar o painel de perguntas e respostas na barra lateral
+    function updateQAPanel() {
+        const qaList = document.getElementById("qa-list");
+        qaList.innerHTML = "";
+        const qaPairs = loadQuestionAnswers();
+        qaPairs.forEach((pair, index) => {
+            const li = document.createElement("li");
+            li.className = "qa-item";
+            li.textContent = pair.question + " - " + pair.answer;
+            const removeButton = document.createElement("button");
+            removeButton.textContent = "Remover";
+            removeButton.onclick = () => removeQuestionAnswer(index);
+            li.appendChild(removeButton);
+            qaList.appendChild(li);
+        });
+    }
+
+    // Função para exportar aprendizado do bot
+    function exportLearning() {
+        const qaPairs = loadQuestionAnswers();
+        const exportInput = document.getElementById("export-input");
+        exportInput.value = JSON.stringify(qaPairs);
+    }
+
+    // Função para importar aprendizado do bot
+    function importLearning() {
+        const importInput = document.getElementById("import-input").value;
+        try {
+            const importedQAPairs = JSON.parse(importInput);
+            if (Array.isArray(importedQAPairs)) {
+                localStorage.setItem("customQAPairs", JSON.stringify(importedQAPairs));
+                updateQAPanel();
+                alert("Aprendizado importado com sucesso!");
+            } else {
+                throw new Error("Formato inválido. Certifique-se de que o aprendizado seja um array.");
+            }
+        } catch (error) {
+            alert("Erro ao importar aprendizado: " + error.message);
+        }
+    }
+
+    // Carregar as perguntas e respostas personalizadas ao iniciar
+    window.onload = function () {
+        updateQAPanel();
+    };
+</script>
+
+</body>
+</html>
