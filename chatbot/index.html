@@ -84,7 +84,8 @@
             flex-wrap: wrap;
             margin-top: 20px;
         }
-        .input-container input, .input-container textarea {
+        .input-container input,
+        .input-container textarea {
             flex: 1;
             margin-right: 10px;
             margin-bottom: 10px;
@@ -153,7 +154,6 @@
 </div>
 
 <script>
-    // Função para enviar mensagem do usuário
     function sendMessage() {
         const userInput = document.getElementById("user-input").value;
         if (userInput.trim() !== "") {
@@ -163,7 +163,6 @@
         }
     }
 
-    // Função para gerar resposta do chatbot
     function generateResponse(userInput) {
         const qaPairs = loadQuestionAnswers();
         for (let i = 0; i < qaPairs.length; i++) {
@@ -175,7 +174,6 @@
         appendMessage("bot", "Desculpe, eu não entendi sua pergunta.");
     }
 
-    // Função para adicionar mensagem ao chat
     function appendMessage(sender, message) {
         const chatMessages = document.getElementById("chat-messages");
         const li = document.createElement("li");
@@ -184,21 +182,22 @@
         chatMessages.appendChild(li);
     }
 
-    // Função para carregar perguntas e respostas do navegador local
     function loadQuestionAnswers() {
         const storedQAPairs = localStorage.getItem("customQAPairs");
         return storedQAPairs ? JSON.parse(storedQAPairs) : [];
     }
 
-    // Função para salvar nova pergunta e resposta no navegador local
     function saveQuestionAnswer(question, answer) {
-        const qaPairs= loadQuestionAnswers();
-        qaPairs.push({ question: question, answer: answer });
+        const qaPairs = loadQuestionAnswers();
+        const newPair = {
+            question: question,
+            answer: answer
+        };
+        qaPairs.push(newPair);
         localStorage.setItem("customQAPairs", JSON.stringify(qaPairs));
         updateQAPanel();
     }
 
-    // Função para remover pergunta e resposta do navegador local
     function removeQuestionAnswer(index) {
         const qaPairs = loadQuestionAnswers();
         qaPairs.splice(index, 1);
@@ -206,7 +205,16 @@
         updateQAPanel();
     }
 
-    // Função para atualizar o painel de perguntas e respostas na barra lateral
+    function addQuestionAnswer() {
+        const questionInput = document.getElementById("new-question").value.trim();
+        const answerInput = document.getElementById("new-answer").value.trim();
+        if (questionInput !== "" && answerInput !== "") {
+            saveQuestionAnswer(questionInput, answerInput);
+            document.getElementById("new-question").value = "";
+            document.getElementById("new-answer").value = "";
+        }
+    }
+
     function updateQAPanel() {
         const qaList = document.getElementById("qa-list");
         qaList.innerHTML = "";
@@ -223,31 +231,27 @@
         });
     }
 
-    // Função para exportar aprendizado do bot
     function exportLearning() {
         const qaPairs = loadQuestionAnswers();
         const exportInput = document.getElementById("export-input");
         exportInput.value = JSON.stringify(qaPairs);
     }
 
-    // Função para importar aprendizado do bot
     function importLearning() {
-        const importInput = document.getElementById("import-input").value;
-        try {
-            const importedQAPairs = JSON.parse(importInput);
-            if (Array.isArray(importedQAPairs)) {
+        const importInput = document.getElementById("import-input").value.trim();
+        if (importInput !== "") {
+            try {
+                const importedQAPairs = JSON.parse(importInput);
                 localStorage.setItem("customQAPairs", JSON.stringify(importedQAPairs));
                 updateQAPanel();
-                alert("Aprendizado importado com sucesso!");
-            } else {
-                throw new Error("Formato inválido. Certifique-se de que o aprendizado seja um array.");
+                document.getElementById("import-input").value = "";
+            } catch (error) {
+                console.error("Erro ao importar dados:", error);
+                alert("Erro ao importar dados. Certifique-se de fornecer um JSON válido.");
             }
-        } catch (error) {
-            alert("Erro ao importar aprendizado: " + error.message);
         }
     }
 
-    // Carregar as perguntas e respostas personalizadas ao iniciar
     window.onload = function () {
         updateQAPanel();
     };
