@@ -143,9 +143,6 @@
             <textarea id="import-input" placeholder="Importar aprendizado..." style="margin-bottom: 10px;"></textarea>
             <button onclick="importLearning()">Importar <i class="fas fa-file-import"></i></button>
         </div>
-        <div class="input-container">
-            <button onclick="generateCode()">Gerar Código JavaScript</button>
-        </div>
     </div>
     <div class="chat-container">
         <ul class="chat-messages" id="chat-messages"></ul>
@@ -253,29 +250,6 @@
                 alert("Erro ao importar dados. Certifique-se de fornecer um JSON válido.");
             }
         }
-    }
-
-    function generateCode() {
-        const qaPairs = loadQuestionAnswers();
-        let code = "const qaPairs = [\n";
-        qaPairs.forEach(pair => {
-            code += `    { question: "${pair.question}", answer: "${pair.answer}" },\n`;
-        });
-        code += "];\n\n";
-        code += "function generateResponse(userInput) {\n";
-        code += "    for (let i = 0; i < qaPairs.length; i++) {\n";
-        code += "        if (userInput.toLowerCase().includes(qaPairs[i].question.toLowerCase())) {\n";
-        code += "            return qaPairs[i].answer;\n";
-        code += "        }\n";
-        code += "    }\n";
-        code += "    return 'Desculpe, eu não entendi sua pergunta.';\n";
-        code += "}\n";
-        const codeTextarea = document.createElement("textarea");
-        codeTextarea.value = code;
-        codeTextarea.rows = 15;
-        codeTextarea.cols = 60;
-        alert("Código JavaScript gerado! Copie e cole onde desejar.");
-        document.body.appendChild(codeTextarea);
     }
 
     window.onload = function () {
