@@ -1,0 +1,55 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+header {
+    background-color: #4CAF50;
+    color: white;
+    padding: 1em;
+    width: 100%;
+    text-align: center;
+}
+
+main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+}
+
+#codeInput {
+    width: 80%;
+    height: 200px;
+    font-family: monospace;
+    font-size: 1em;
+    padding: 10px;
+    border: 1px solid #ccc;
+    margin-bottom: 20px;
+}
+
+#runButton {
+    padding: 10px 20px;
+    font-size: 1em;
+    cursor: pointer;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    margin-bottom: 20px;
+}
+
+#output {
+    width: 80%;
+    height: 200px;
+    background-color: white;
+    border: 1px solid #ccc;
+    padding: 10px;
+    overflow: auto;
+    font-family: monospace;
+    font-size: 1em;
+}
