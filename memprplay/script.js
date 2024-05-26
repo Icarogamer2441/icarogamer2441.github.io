@@ -5,7 +5,7 @@ document.getElementById('runButton').addEventListener('click', () => {
     interpret(code, outputElement);
 });
 
-function interpret(code, outputElement) {
+async function interpret(code, outputElement) {
     const lines = code.split("\n");
     let memory = 26;
     let inp = [""];
@@ -37,7 +37,7 @@ function interpret(code, outputElement) {
                         outputElement.textContent += memory + '\n';
                         break;
                     case "@":
-                        handleInput(outputElement, inp);
+                        await handleInput(outputElement, inp);
                         break;
                     case ".":
                         outputElement.textContent += inp[0];
@@ -49,16 +49,19 @@ function interpret(code, outputElement) {
 }
 
 function handleInput(outputElement, inp) {
-    const inputElement = document.createElement('input');
-    inputElement.type = 'text';
-    outputElement.appendChild(inputElement);
-    inputElement.focus();
+    return new Promise((resolve) => {
+        const inputElement = document.createElement('input');
+        inputElement.type = 'text';
+        outputElement.appendChild(inputElement);
+        inputElement.focus();
 
-    inputElement.addEventListener('keydown', function(event) {
-        if (event.key === 'Enter') {
-            inp[0] = inputElement.value;
-            outputElement.removeChild(inputElement);
-        }
+        inputElement.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                inp[0] = inputElement.value;
+                outputElement.removeChild(inputElement);
+                resolve();
+            }
+        });
     });
 }
 
