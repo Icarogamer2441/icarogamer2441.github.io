@@ -1,13 +1,14 @@
 document.getElementById('runButton').addEventListener('click', () => {
     const code = document.getElementById('codeInput').value;
     const outputElement = document.getElementById('output');
-    outputElement.textContent = interpret(code);
+    outputElement.textContent = '';
+    interpret(code, outputElement);
 });
 
-function interpret(code) {
+function interpret(code, outputElement) {
     const lines = code.split("\n");
     let memory = 26;
-    let output = '';
+    let inp = [""];
 
     for (let line of lines) {
         const tokens = Array.from(line);
@@ -30,16 +31,35 @@ function interpret(code) {
                         memory -= 5;
                         break;
                     case "&":
-                        output += getCharFromMemory(memory);
+                        outputElement.textContent += getCharFromMemory(memory);
                         break;
                     case "%":
-                        output += memory + '\n';
+                        outputElement.textContent += memory + '\n';
+                        break;
+                    case "@":
+                        handleInput(outputElement, inp);
+                        break;
+                    case ".":
+                        outputElement.textContent += inp[0];
                         break;
                 }
             }
         }
     }
-    return output;
+}
+
+function handleInput(outputElement, inp) {
+    const inputElement = document.createElement('input');
+    inputElement.type = 'text';
+    outputElement.appendChild(inputElement);
+    inputElement.focus();
+
+    inputElement.addEventListener('keydown', function(event) {
+        if (event.key === 'Enter') {
+            inp[0] = inputElement.value;
+            outputElement.removeChild(inputElement);
+        }
+    });
 }
 
 function getCharFromMemory(memory) {
