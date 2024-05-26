@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hardlang Playground</title>
+<style>
+    /* CSS styling */
+    body {
+        font-family: Arial, sans-serif;
+    }
+    .container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+    textarea {
+        width: 100%;
+        height: 200px;
+        margin-bottom: 10px;
+    }
+    button {
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        cursor: pointer;
+    }
+    button:hover {
+        background-color: #0056b3;
+    }
+    .output {
+        border: 1px solid #ccc;
+        padding: 10px;
+        min-height: 100px;
+    }
+</style>
+</head>
+<body>
+<div class="container">
+    <h1>Hardlang Playground</h1>
+    <textarea id="code" placeholder="Enter Hardlang code here..."></textarea>
+    <button onclick="interpretCode()">Run Code</button>
+    <div class="output" id="output"></div>
+</div>
+
+<script>
+    // JavaScript code for interpreting Hardlang code
+    function interpretCode() {
+        var code = document.getElementById('code').value;
+        var output = interpret(code);
+        document.getElementById('output').innerText = output;
+    }
+
+    // Hardlang interpreter function
+    function interpret(code) {
+        var output = "";
+        var letterapos = 0;
+        var letterbpos = 0;
+        var lettercpos = 0;
+
+        for (var i = 0; i < code.length; i++) {
+            var char = code.charAt(i);
+            if (char === 'a') {
+                letterapos++;
+            } else if (char === 'b') {
+                letterbpos++;
+            } else if (char === 'c') {
+                lettercpos++;
+            } else if (char === 's') {
+                letterapos--;
+            } else if (char === 'n') {
+                letterbpos--;
+            } else if (char === 'h') {
+                lettercpos--;
+            } else if (char === 'p') {
+                if (letterapos == 2) {
+                    if (letterbpos == 1) {
+                        output += "\n";
+                    } else if (letterbpos == 3) {
+                        output += " ";
+                    }
+                } else if (letterapos == 3) {
+                    if (letterbpos == 2) {
+                        output += "a";
+                    } else if (lettercpos == 3) {
+                        output += "b";
+                    } else if (letterbpos == 4) {
+                        if (lettercpos == 2) {
+                            output += "c";
+                        }
+                    }
+                } else if (letterapos == 5) {
+                    if (letterbpos == 1) {
+                        output += "d";
+                    } else if (letterbpos == 3) {
+                        output += "e";
+                    } else if (lettercpos == 2) {
+                        output += "f";
+                    }
+                } else if (letterapos == 7) {
+                    if (lettercpos == 5) {
+                        output += "g";
+                    } else if (letterbpos == 6) {
+                        output += "h";
+                    } else if (letterbpos == 7) {
+                        output += "i";
+                    } else if (letterbpos == 9) {
+                        output += "j";
+                    } else if (lettercpos == 2) {
+                        output += "k";
+                    }
+                } else if (letterapos == 6) {
+                    if (lettercpos == 1) {
+                        output += "l";
+                    } else if (letterbpos == 3) {
+                        output += "m";
+                    } else if (lettercpos == 4) {
+                        output += "n";
+                    } else if (lettercpos == 2) {
+                        output += "o";
+                    } else if (letterbpos == 9) {
+                        output += "p";
+                    } else if (letterbpos == 10) {
+                        output += "q";
+                    } else if (lettercpos == 3) {
+                        output += "r";
+                    }
+                } else if (letterapos == 8) {
+                    if (letterbpos == 5) {
+                        output += "s";
+                    } else if (letterbpos == 7) {
+                        output += "t";
+                    } else if (lettercpos == 2) {
+                        output += "u";
+                    } else if (letterbpos == 3) {
+                        output += "v";
+                    } else if (letterbpos == 6) {
+                        output += "w";
+                    } else if (lettercpos == 7) {
+                        output += "x";
+                    } else if (letterbpos == 9) {
+                        output += "y";
+                    } else if (letterbpos == 10) {
+                        output += "z";
+                    }
+                } else if (letterapos == 9) {
+                    if (letterbpos == 1) {
+                        output += ";";
+                    } else if (letterbpos == 2) {
+                        output += ":";
+                    } else if (letterbpos == 3) {
+                        output += ".";
+                    } else if (letterbpos == 4) {
+                        output += ",";
+                    } else if (letterbpos == 5) {
+                        output += ".";
+                    } else if (letterbpos == 6) {
+                        output += "!";
+                    } else if (letterbpos == 7) {
+                        output += "?";
+                    } else if (letterbpos == 8) {
+                        output += "(";
+                    } else if (letterbpos == 9) {
+                        output += ")";
+                    } else if (letterbpos == 10) {
+                        output += "\"";
+                    } else if (lettercpos == 2) {
+                        output += "'";
+                    } else if (lettercpos == 3) {
+                        output += "ç";
+                    } else if (lettercpos == 4) {
+                        output += "*";
+                    } else if (lettercpos == 5) {
+                        output += "-";
+                    } else if (lettercpos == 6) {
+                        output += "/";
+                    } else if (lettercpos == 7) {
+                        output += "@";
+                    } else if (lettercpos == 8) {
+                        output += "&";
+                    } else if (lettercpos == 9) {
+                        output += "{";
+                    } else if (lettercpos == 10) {
+                        output += "}";
+                    }
+                }
+            }
+        }
+        return output;
+    }
+</script>
+</body>
+</html>
