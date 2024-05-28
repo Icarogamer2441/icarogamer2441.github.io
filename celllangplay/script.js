@@ -30,8 +30,10 @@ function interpret(code) {
                 }
             } else if (token === "&") {
                 output += cellpos;
+            } else if (token === "#") {  // Novo token para comentários
+                break;
             } else {
-                output += `Unknown token: '${token}'. tokens: '>', '<', '*', '!', '&'.\n`;
+                output += `Unknown token: '${token}'. tokens: '>', '<', '*', '!', '&', '#'.\n`;
             }
         }
     }
@@ -51,9 +53,13 @@ function saveCode() {
         alert("The code is empty!");
         return;
     }
-    const timestamp = new Date().toLocaleString();
-    localStorage.setItem(timestamp, code);
-    loadFiles();
+    const filename = prompt("Enter a name for your file:");
+    if (filename) {
+        localStorage.setItem(filename, code);
+        loadFiles();
+    } else {
+        alert("File not saved. No filename provided.");
+    }
 }
 
 function loadFiles() {
@@ -77,5 +83,21 @@ function clearFiles() {
     loadFiles();
 }
 
-// Load saved files when the page loads
-window.onload = loadFiles;
+function toggleDarkMode() {
+    document.body.classList.toggle('dark-mode');
+    const mode = document.body.classList.contains('dark-mode') ? 'dark' : 'light';
+    localStorage.setItem('mode', mode);
+}
+
+function applyInitialMode() {
+    const savedMode = localStorage.getItem('mode') || 'light';
+    if (savedMode === 'dark') {
+        document.body.classList.add('dark-mode');
+    }
+}
+
+// Apply the initial mode when the page loads
+window.onload = () => {
+    loadFiles();
+    applyInitialMode();
+};
