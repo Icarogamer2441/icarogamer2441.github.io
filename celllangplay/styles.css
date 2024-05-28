@@ -1,24 +1,67 @@
-/* Importando uma fonte moderna */
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
 
 body {
     font-family: 'Roboto', sans-serif;
     background-color: #f4f4f9;
     display: flex;
-    justify-content: center;
-    align-items: center;
     height: 100vh;
     margin: 0;
 }
 
-.container {
+.sidebar {
     background-color: #ffffff;
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    max-width: 600px;
+    padding: 20px;
+    border-right: 2px solid #ddd;
+    width: 250px;
     box-sizing: border-box;
+    overflow-y: auto;
+}
+
+.sidebar h2 {
+    font-weight: 700;
+    color: #333;
+    font-size: 20px;
+    margin-top: 0;
+}
+
+.sidebar ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.sidebar li {
+    padding: 10px;
+    cursor: pointer;
+    border-bottom: 1px solid #ddd;
+    transition: background-color 0.3s;
+}
+
+.sidebar li:hover {
+    background-color: #f0f0f0;
+}
+
+.sidebar button {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 8px;
+    background-color: #dc3545;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.sidebar button:hover {
+    background-color: #c82333;
+}
+
+.container {
+    flex: 1;
+    padding: 30px;
+    box-sizing: border-box;
+    overflow-y: auto;
 }
 
 h1 {
@@ -75,8 +118,8 @@ pre {
     font-size: 16px;
     white-space: pre-wrap;
     word-wrap: break-word;
-    max-height: 300px; /* Limite de altura */
-    overflow-y: auto; /* Barra de rolagem vertical */
+    max-height: 300px;
+    overflow-y: auto;
     box-sizing: border-box;
     border: 2px solid #ddd;
 }
