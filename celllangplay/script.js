@@ -96,7 +96,36 @@ function applyInitialMode() {
     }
 }
 
-// Apply the initial mode when the page loads
+function importFile() {
+    document.getElementById('file-input').click();
+}
+
+function loadFile(event) {
+    const file = event.target.files[0];
+    const reader = new FileReader();
+    reader.onload = function(event) {
+        const code = event.target.result;
+        document.getElementById('code').value = code;
+    };
+    reader.readAsText(file);
+}
+
+function exportFile() {
+    const code = document.getElementById('code').value;
+    const filename = prompt("Enter a filename to export:");
+    if (filename) {
+        const blob = new Blob([code], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }
+}
+
 window.onload = () => {
     loadFiles();
     applyInitialMode();
