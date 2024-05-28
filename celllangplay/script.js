@@ -48,7 +48,7 @@ function executeCode() {
 function saveCode() {
     const code = document.getElementById("code").value;
     if (code.trim() === "") {
-        alert("O código está vazio!");
+        alert("The code is empty!");
         return;
     }
     const timestamp = new Date().toLocaleString();
@@ -77,5 +77,5 @@ function clearFiles() {
     loadFiles();
 }
 
-// Carrega os arquivos salvos ao carregar a página
+// Load saved files when the page loads
 window.onload = loadFiles;
