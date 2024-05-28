@@ -44,3 +44,38 @@ function executeCode() {
     const output = interpret(code);
     document.getElementById("output").textContent = output;
 }
+
+function saveCode() {
+    const code = document.getElementById("code").value;
+    if (code.trim() === "") {
+        alert("O código está vazio!");
+        return;
+    }
+    const timestamp = new Date().toLocaleString();
+    localStorage.setItem(timestamp, code);
+    loadFiles();
+}
+
+function loadFiles() {
+    const fileList = document.getElementById("file-list");
+    fileList.innerHTML = "";
+    Object.keys(localStorage).forEach(key => {
+        const li = document.createElement("li");
+        li.textContent = key;
+        li.onclick = () => loadCode(key);
+        fileList.appendChild(li);
+    });
+}
+
+function loadCode(key) {
+    const code = localStorage.getItem(key);
+    document.getElementById("code").value = code;
+}
+
+function clearFiles() {
+    localStorage.clear();
+    loadFiles();
+}
+
+// Carrega os arquivos salvos ao carregar a página
+window.onload = loadFiles;
