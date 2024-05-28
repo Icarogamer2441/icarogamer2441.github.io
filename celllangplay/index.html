@@ -15,11 +15,14 @@
     <div class="container">
         <h1>CellLang Playground</h1>
         <button id="toggle-dark-mode" onclick="toggleDarkMode()">Toggle Dark Mode</button>
+        <button onclick="importFile()">Import File</button>
+        <button onclick="exportFile()">Export File</button>
         <textarea id="code" placeholder="Enter your CellLang code here..."></textarea>
         <button onclick="saveCode()">Save Code</button>
         <button onclick="executeCode()">Execute</button>
         <pre id="output"></pre>
     </div>
+    <input type="file" id="file-input" style="display: none;" onchange="loadFile(event)">
     <script src="script.js"></script>
 </body>
 </html>
