@@ -7,6 +7,7 @@ const cells = {
     60: "1", 61: "2", 62: "3", 63: "4", 64: "5", 65: "6", 66: "7", 67: "8", 68: "9", 69: "0", 70: "\t"
 };
 
+
 function interpret(code) {
     const lines = code.split("\n");
     let cellpos = 0;
