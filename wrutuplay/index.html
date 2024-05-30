@@ -3,77 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modern Playground</title>
+    <title>Wrutulang Playground</title>
     <style>
         body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background: linear-gradient(135deg, #71b7e6, #9b59b6);
             font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
             margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
-
-        .container {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            width: 600px;
-            max-width: 100%;
-        }
-
         h1 {
-            text-align: center;
             color: #333;
         }
-
-        textarea {
-            width: 100%;
-            height: 150px;
+        #editor {
+            width: 80%;
+            height: 300px;
+            margin: 20px 0;
+            padding: 10px;
             border: 1px solid #ccc;
-            border-radius: 5px;
-            padding: 10px;
-            resize: none;
-            font-family: monospace;
+            background-color: #fff;
+            font-family: 'Courier New', Courier, monospace;
+            line-height: 1.5;
+            resize: vertical;
+            overflow: auto;
         }
-
-        button {
-            display: block;
-            width: 100%;
+        #output {
+            width: 80%;
+            min-height: 100px;
+            margin: 20px 0;
             padding: 10px;
-            border: none;
-            border-radius: 5px;
-            background: #9b59b6;
-            color: white;
+            border: 1px solid #ccc;
+            background-color: #fff;
+            white-space: pre-wrap;
+        }
+        #runButton {
+            padding: 10px 20px;
             font-size: 16px;
             cursor: pointer;
-            margin-top: 10px;
-        }
-
-        button:hover {
-            background: #8e44ad;
-        }
-
-        .output {
-            margin-top: 20px;
-            padding: 10px;
-            background: #f1f1f1;
+            background-color: #28a745;
+            color: #fff;
+            border: none;
             border-radius: 5px;
-            min-height: 50px;
-            font-family: monospace;
-            white-space: pre-wrap;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Playground</h1>
-        <textarea id="code" placeholder="Enter your code here..."></textarea>
-        <button onclick="executeCode()">Run Code</button>
-        <div class="output" id="output"></div>
-    </div>
+    <h1>Wrutulang Playground</h1>
+    <textarea id="editor" placeholder="Digite seu código Wrutulang aqui..."></textarea>
+    <button id="runButton">Executar</button>
+    <div id="output"></div>
 
     <script>
         const functions = {};
@@ -94,34 +74,32 @@
                 for (let line of lines) {
                     const tokens = line.trim().split(/\s+/);
 
-                    if (tokens.length) {
+                    if (tokens.length > 0) {
                         const token = tokens[0];
 
                         if (!in_func[0]) {
                             if (token === "fnc") {
                                 funcname[0] = tokens[1];
                                 if (tokens[2] === "[") {
-                                    endnum += 1;
+                                    endnum++;
                                     in_func[0] = true;
                                     functions[funcname[0]] = [];
                                 }
-                            } else if (token === "&&" || token === "") {
-                                continue;
-                            } else {
-                                this.printError("You can only create functions outside of a function");
+                            } else if (token !== "&&" && token !== "" && token !== "]") {
+                                console.error("Error: You can only create functions outside of a function");
                                 return;
                             }
-                        } else {
+                        } else if (in_func[0]) {
                             if (token === "if" || token === "while") {
-                                endnum += 1;
+                                endnum++;
                                 functions[funcname[0]].push(line);
                             } else if (token === "]") {
                                 if (endnum > 0) {
-                                    endnum -= 1;
+                                    endnum--;
                                     functions[funcname[0]].push(line);
-                                } else {
+                                }
+                                if (endnum === 0) {
                                     in_func[0] = false;
-                                    endnum = 0;
                                     functions[funcname[0]].pop();
                                 }
                             } else {
@@ -130,7 +108,10 @@
                         }
                     }
                 }
-                new Executor(functions["main"].join("\n")).execute2();
+
+                if (functions["main"]) {
+                    new Executor(functions["main"].join("\n")).execute2();
+                }
             }
 
             execute2() {
@@ -147,282 +128,214 @@
                 for (let line of lines) {
                     const tokens = line.trim().split(/\s+/);
 
-                    if (tokens.length) {
+                    if (tokens.length > 0) {
                         const token = tokens[0];
 
                         if (!in_if[0] && !in_while[0]) {
-                            this.executeCommand(token, tokens);
+                            switch (token) {
+                                case "showln":
+                                    if (tokens[1] === "\"") {
+                                        if (tokens[tokens.length - 1] === "\"") {
+                                            const msg = tokens.slice(2, tokens.length - 1).join(" ");
+                                            document.getElementById('output').innerText += msg;
+                                        } else {
+                                            console.error("Error: use \" to close a string");
+                                            return;
+                                        }
+                                    } else if (tokens[1] === "\\n") {
+                                        document.getElementById('output').innerText += "\n";
+                                    } else if (tokens[1] === "\\spc") {
+                                        document.getElementById('output').innerText += " ";
+                                    } else {
+                                        document.getElementById('output').innerText += variables[tokens[1]];
+                                    }
+                                    break;
+                                case "int":
+                                    if (tokens[2] === ":") {
+                                        variables[tokens[1]] = parseInt(tokens[3]);
+                                    } else {
+                                        console.error("Error: use : to assign a value to a variable");
+                                        return;
+                                    }
+                                    break;
+                                case "string":
+                                    if (tokens[2] === ":") {
+                                        variables[tokens[1]] = tokens.slice(3).join(" ");
+                                    } else {
+                                        console.error("Error: use : to assign a value to a variable");
+                                        return;
+                                    }
+                                    break;
+                                case "call":
+                                    new Executor(functions[tokens[1]].join("\n")).execute2();
+                                    break;
+                                case "if":
+                                    varname1[0] = tokens[1];
+                                    operation[0] = tokens[2];
+                                    if (tokens.length === 5) {
+                                        varname2[0] = tokens[3];
+                                        if (tokens[4] === "[") {
+                                            in_if[0] = true;
+                                            endnum++;
+                                            ifcode = [];
+                                        }
+                                    } else {
+                                        if (operation[0] === "[") {
+                                            in_if[0] = true;
+                                            endnum++;
+                                            ifcode = [];
+                                        }
+                                    }
+                                    break;
+                                case "bool":
+                                    if (tokens[2] === ":") {
+                                        variables[tokens[1]] = tokens[3] === "ok" ? 1 : 0;
+                                    } else {
+                                        console.error("Error: use : to assign a value to a variable");
+                                        return;
+                                    }
+                                    break;
+                                case "while":
+                                    if (tokens[1] === "[") {
+                                        in_while[0] = true;
+                                        while_code = [];
+                                        endnum++;
+                                        running_while[0] = true;
+                                    } else {
+                                        console.error("Error: use [ to open a while loop");
+                                        return;
+                                    }
+                                    break;
+                                case "stop":
+                                    running_while[0] = false;
+                                    break;
+                                case "mod":
+                                    if (tokens[2] === "<") {
+                                        variables[tokens[1]] += variables[tokens[3]];
+                                    } else {
+                                        console.error("Error: use < to modify the second variable to the first variable");
+                                        return;
+                                    }
+                                    break;
+                                case "input":
+                                    if (tokens[1] === "int") {
+                                        variables[tokens[2]] = parseInt(prompt("Enter a number:"));
+                                    } else if (tokens[1] === "string") {
+                                        variables[tokens[2]] = prompt("Enter a string:");
+                                    }
+                                    break;
+                                case "float":
+                                    if (tokens[2] === ":") {
+                                        variables[tokens[1]] = parseFloat(tokens[3]);
+                                    } else {
+                                        console.error("Error: use : to assign a value to a variable");
+                                        return;
+                                    }
+                                    break;
+                                case "rand":
+                                    const varname11 = parseInt(tokens[1]);
+                                    const varname22 = parseInt(tokens[2]);
+                                    const outputvar = tokens[3];
+                                    variables[outputvar] = Math.floor(Math.random() * (varname22 - varname11 + 1)) + varname11;
+                                    break;
+                                case "list":
+                                    variables[tokens[1]] = [];
+                                    break;
+                                case "listapp":
+                                    variables[tokens[1]].push(variables[tokens[2]]);
+                                    break;
+                                case "listpop":
+                                    variables[tokens[1]].pop();
+                                    break;
+                                case "getlistitem":
+                                    if (tokens[3] === ">") {
+                                        variables[tokens[4]] = variables[tokens[1]][parseInt(tokens[2])];
+                                    } else {
+                                        console.error("Error: use > to reference the output variable");
+                                        return;
+                                    }
+                                    break;
+                                case "split":
+                                    variables[tokens[2]] = variables[tokens[1]].split(" ");
+                                    break;
+                                default:
+                                    console.error(`Error: unknown token: ${token}`);
+                                    return;
+                            }
                         } else if (in_if[0]) {
-                            if (token === "if" || token === "while") {
-                                endnum += 1;
-                                ifcode.push(line);
-                            } else if (token === "]") {
-                                if (endnum > 0) {
-                                    endnum -= 1;
-                                    ifcode.push(line);
-                                } else {
-                                    in_if[0] = false;
-                                    endnum = 0;
-                                    ifcode.pop();
-                                    this.evaluateCondition(varname1[0], operation[0], varname2[0], ifcode);
-                                }
-                            } else {
+                        if (token === "if" || token === "while") {
+                            endnum++;
+                            ifcode.push(line);
+                        } else if (token === "]") {
+                            if (endnum > 0) {
+                                endnum--;
                                 ifcode.push(line);
                             }
-                        } else if (in_while[0]) {
-                            if (token === "if" || token === "while") {
-                                endnum += 1;
-                                while_code.push(line);
-                            } else if (token === "]") {
-                                if (endnum > 0) {
-                                    endnum -= 1;
-                                    while_code.push(line);
-                                } else {
-                                    in_while[0] = false;
-                                    endnum = 0;
-                                    while_code.pop();
-                                    while (running_while[0]) {
-                                        new Executor(while_code.join("\n")).execute2();
+                            if (endnum === 0) {
+                                in_if[0] = false;
+                                if (operation[0] === "=") {
+                                    if (variables[varname1[0]] === variables[varname2[0]]) {
+                                        new Executor(ifcode.join("\n")).execute2();
+                                    }
+                                } else if (operation[0] === "!") {
+                                    if (variables[varname1[0]] !== variables[varname2[0]]) {
+                                        new Executor(ifcode.join("\n")).execute2();
+                                    }
+                                } else if (operation[0] === ">>") {
+                                    if (variables[varname1[0]] >= variables[varname2[0]]) {
+                                        new Executor(ifcode.join("\n")).execute2();
+                                    }
+                                } else if (operation[0] === "<<") {
+                                    if (variables[varname1[0]] <= variables[varname2[0]]) {
+                                        new Executor(ifcode.join("\n")).execute2();
+                                    }
+                                } else if (operation[0] === ">") {
+                                    if (variables[varname1[0]] > variables[varname2[0]]) {
+                                        new Executor(ifcode.join("\n")).execute2();
+                                    }
+                                } else if (operation[0] === "<") {
+                                    if (variables[varname1[0]] < variables[varname2[0]]) {
+                                        new Executor(ifcode.join("\n")).execute2();
+                                    }
+                                } else if (operation[0] === "[") {
+                                    if (variables[varname1[0]]) {
+                                        new Executor(ifcode.join("\n")).execute2();
                                     }
                                 }
-                            } else {
+                            }
+                        } else {
+                            ifcode.push(line);
+                        }
+                    } else if (in_while[0]) {
+                        if (token === "if" || token === "while") {
+                            endnum++;
+                            while_code.push(line);
+                        } else if (token === "]") {
+                            if (endnum > 0) {
+                                endnum--;
                                 while_code.push(line);
                             }
+                            if (endnum === 0) {
+                                in_while[0] = false;
+                                while (running_while[0]) {
+                                    new Executor(while_code.join("\n")).execute2();
+                                }
+                            }
+                        } else {
+                            while_code.push(line);
                         }
                     }
                 }
             }
-
-            executeCommand(token, tokens) {
-                const outputElement = document.getElementById('output');
-                switch (token) {
-                    case "showln":
-                        this.showln(tokens, outputElement);
-                        break;
-                    case "int":
-                        this.declareVariable(tokens, "int");
-                        break;
-                    case "string":
-                        this.declareVariable(tokens, "string");
-                        break;
-                    case "call":
-                        this.callFunction(tokens[1]);
-                        break;
-                    case "if":
-                        this.startIfBlock(tokens);
-                        break;
-                    case "bool":
-                        this.declareVariable(tokens, "bool");
-                        break;
-                    case "while":
-                        this.startWhileBlock(tokens);
-                        break;
-                    case "stop":
-                        running_while[0] = false;
-                        break;
-                    case "mod":
-                        this.modifyVariable(tokens);
-                        break;
-                    case "input":
-                        this.inputVariable(tokens);
-                        break;
-                    case "float":
-                        this.declareVariable(tokens, "float");
-                        break;
-                    case "rand":
-                        this.generateRandom(tokens);
-                        break;
-                    case "list":
-                        variables[tokens[1]] = [];
-                        break;
-                    case "listapp":
-                        variables[tokens[1]].push(variables[tokens[2]]);
-                        break;
-                    case "listpop":
-                        variables[tokens[1]].pop();
-                        break;
-                    case "getlistitem":
-                        this.getListItem(tokens);
-                        break;
-                    case "split":
-                        variables[tokens[2]] = variables[tokens[1]].split();
-                        break;
-                    case "&&":
-                    case "":
-                        break;
-                    default:
-                        this.printError(`Unknown token: ${token}`);
-                }
-            }
-
-            showln(tokens, outputElement) {
-                if (tokens[1] === "\"") {
-                    if (tokens[tokens.length - 1] === "\"") {
-                        const msg = tokens.slice(2, tokens.length - 1).join(" ");
-                        outputElement.innerText += msg;
-                    } else {
-                        this.printError("Use \" to close a string");
-                    }
-                } else if (tokens[1] === "\\n") {
-                    outputElement.innerText += "\n";
-                } else if (tokens[1] === "\\spc") {
-                    outputElement.innerText += " ";
-                } else {
-                    outputElement.innerText += variables[tokens[1]] ?? '';
-                }
-            }
-
-            declareVariable(tokens, type) {
-                const varname = tokens[1];
-                if (tokens[2] === ":") {
-                    let value;
-                    if (type === "int") {
-                        value = parseInt(tokens[3], 10);
-                    } else if (type === "string") {
-                        value = tokens.slice(3).join(" ");
-                    } else if (type === "bool") {
-                        value = tokens[3] === "ok" ? 1 : 0;
-                    } else if (type === "float") {
-                        value = parseFloat(tokens[3]);
-                    }
-                    variables[varname] = value;
-                } else {
-                    this.printError("Use : to assign a value to a variable");
-                }
-            }
-
-            callFunction(funcname) {
-                new Executor(functions[funcname].join("\n")).execute2();
-            }
-
-            startIfBlock(tokens) {
-                varname1[0] = tokens[1];
-                operation[0] = tokens[2];
-                if (tokens.length === 5) {
-                    varname2[0] = tokens[3];
-                    if (tokens[4] === "[") {
-                        in_if[0] = true;
-                        endnum += 1;
-                        ifcode = [];
-                    }
-                } else {
-                    if (operation[0] === "[") {
-                        in_if[0] = true;
-                        endnum += 1;
-                        ifcode = [];
-                    }
-                }
-            }
-
-            startWhileBlock(tokens) {
-                if (tokens[1] === "[") {
-                    in_while[0] = true;
-                    while_code = [];
-                    endnum += 1;
-                    running_while[0] = true;
-                } else {
-                    this.printError("Use [ to open a while loop");
-                }
-            }
-
-            modifyVariable(tokens) {
-                const varname1 = tokens[1];
-                if (tokens[2] === "<") {
-                    const varname2 = tokens[3];
-                    variables[varname1] += variables[varname2];
-                } else {
-                    this.printError("Use < to modify the second var to the first var");
-                }
-            }
-
-            inputVariable(tokens) {
-                const inptype = tokens[1];
-                const varname = tokens[2];
-                const value = prompt(`Enter a ${inptype}:`);
-                if (inptype === "int") {
-                    variables[varname] = parseInt(value, 10);
-                } else if (inptype === "string") {
-                    variables[varname] = value;
-                }
-            }
-
-            generateRandom(tokens) {
-                let varname1 = tokens[1];
-                let varname2 = tokens[2];
-                if (varname1.match(/^\d+$/)) {
-                    varname1 = parseInt(varname1, 10);
-                } else {
-                    varname1 = variables[varname1];
-                }
-                if (varname2.match(/^\d+$/)) {
-                    varname2 = parseInt(varname2, 10);
-                } else {
-                    varname2 = variables[varname2];
-                }
-                const outputvar = tokens[3];
-                variables[outputvar] = Math.floor(Math.random() * (varname2 - varname1 + 1)) + varname1;
-            }
-
-            getListItem(tokens) {
-                const listvarname = tokens[1];
-                const itempos = tokens[2];
-                if (tokens[3] === ">") {
-                    const outputvar = tokens[4];
-                    const index = itempos.match(/^\d+$/) ? parseInt(itempos, 10) : variables[itempos];
-                    variables[outputvar] = variables[listvarname][index];
-                } else {
-                    this.printError("Use > to reference the output var");
-                }
-            }
-
-            evaluateCondition(varname1, operation, varname2, ifcode) {
-                const value1 = variables[varname1];
-                const value2 = variables[varname2];
-                let conditionMet = false;
-
-                switch (operation) {
-                    case "=":
-                        conditionMet = value1 === value2;
-                        break;
-                    case "!":
-                        conditionMet = value1 !== value2;
-                        break;
-                    case ">>":
-                        conditionMet = value1 >= value2;
-                        break;
-                    case "<<":
-                        conditionMet = value1 <= value2;
-                        break;
-                    case ">":
-                        conditionMet = value1 > value2;
-                        break;
-                    case "<":
-                        conditionMet = value1 < value2;
-                        break;
-                    case "[":
-                        conditionMet = Boolean(value1);
-                        break;
-                    default:
-                        this.printError(`Unknown operation: ${operation}`);
-                }
-
-                if (conditionMet) {
-                    new Executor(ifcode.join("\n")).execute2();
-                }
-            }
-
-            printError(message) {
-                const outputElement = document.getElementById('output');
-                outputElement.innerText += `Error: ${message}\n`;
-            }
         }
+    }
 
-        function executeCode() {
-            const code = document.getElementById('code').value;
-            const outputElement = document.getElementById('output');
-            outputElement.innerText = '';
-            new Executor(code).execute1();
-        }
-    </script>
+    document.getElementById('runButton').addEventListener('click', () => {
+        const code = document.getElementById('editor').value;
+        document.getElementById('output').innerText = '';
+        functions['main'] = code.split('\n');
+        new Executor(code).execute1();
+    });
+</script>
 </body>
 </html>
