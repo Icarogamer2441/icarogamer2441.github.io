@@ -4,15 +4,45 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Wrutulang Playground</title>
-    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+            padding: 0;
+        }
+        #editor {
+            width: 80%;
+            height: 300px;
+            border: 1px solid #ccc;
+            margin-top: 20px;
+            padding: 10px;
+            font-family: monospace;
+        }
+        #execute {
+            margin: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        #output {
+            width: 80%;
+            height: 200px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            overflow-y: auto;
+            background-color: #f9f9f9;
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Wrutulang Playground</h1>
-        <textarea id="code-input" placeholder="Write your Wrutulang code here..."></textarea>
-        <button id="run-button">Run</button>
-        <pre id="output"></pre>
-    </div>
-    <script src="script.js"></script>
+    <h1>Wrutulang Playground</h1>
+    <textarea id="editor" placeholder="Write your wrutulang code here..."></textarea>
+    <button id="execute">Execute</button>
+    <pre id="output"></pre>
+
+    <script src="wrutulang.js"></script>
 </body>
 </html>
