@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Search</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            background-color: #222;
+            color: #fff;
+        }
+        .container {
+            text-align: center;
+            padding: 40px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: #f1356d;
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+        p {
+            font-size: 1.2em;
+            margin-bottom: 30px;
+        }
+        .search-box {
+            position: relative;
+            margin-bottom: 30px;
+        }
+        .search-box input {
+            width: 100%;
+            padding: 10px;
+            font-size: 1.2em;
+            border: none;
+            background-color: #333;
+            color: #fff;
+            outline: none;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+        .search-box input::placeholder {
+            color: #aaa;
+        }
+        .items {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .item {
+            background: #444;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        .item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+        }
+        .item h2 {
+            margin-top: 0;
+            margin-bottom: 5px;
+            font-size: 1.5em;
+        }
+        .item h5 {
+            margin-top: 5px;
+            margin-bottom: 10px;
+            font-size: 1em;
+        }
+        .item a {
+            color: #f1356d;
+            text-decoration: none;
+            font-size: 1.2em;
+        }
+        .item a:hover {
+            text-decoration: underline;
+        }
+        .language {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-size: 1.2em;
+            color: #aaa;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Random Search</h1>
+        <p>This site contains random things you can search for.</p>
+        <div class="search-box">
+            <input type="text" id="search" placeholder="Search for items...">
+        </div>
+        <div class="items" id="itemContainer">
+            <div class="item">
+                <span class="language">Pt-br</span>
+                <h2>Linguagem de prog wrutulang</h2>
+                <h5>Uma linguagem de programação feita para ser simples e evoluir com o tempo</h5>
+                <a href="https://github.com/Icarogamer2441/wrutulang">Visit Site</a>
+            </div>
+            <div class="item">
+                <span class="language">Pt-br</span>
+                <h2>Memprintlang Esolang</h2>
+                <h5>uma linguagem de programação esoterica feita para ser dificil</h5>
+                <a href="https://github.com/Icarogamer2441/memprintlang">Visit Site</a>
+            </div>
+            <div class="item">
+                <span class="language">En-usa</span>
+                <h2>Icarogamer2441 github</h2>
+                <h5>Github from the creator of this website</h5>
+                <a href="https://github.com/Icarogamer2441/">Visit Site</a>
+            </div>
+            <div class="item">
+                <span class="language">Pt-br</span>
+                <h2>Irmãos dev Website</h2>
+                <h5>um site para você aprender coisas sobre programação (eles tem um canal na twitch tambem)</h5>
+                <a href="https://irmaos.dev/">Visit Site</a>
+            </div>
+            <div class="item">
+                <span class="language">Pt-br</span>
+                <h2>Irmãos dev Twitch</h2>
+                <h5>twitch dos irmãos dev</h5>
+                <a href="https://www.twitch.tv/irmaosdev">Visit Site</a>
+            </div>
+            <div class="item">
+                <span class="language">Pt-br</span>
+                <h2>Trilha de estudos Irmãos dev</h2>
+                <h5>Trilha de estudos dos irmãos dev</h5>
+                <a href="https://irmaos.dev/trilha/">Visit Site</a>
+            </div>
+            <div class="item">
+                <span class="language">Pt-br</span>
+                <h2>Projeto daniella API fake</h2>
+                <h5>api fake feita por daniella do canal da twitch irmãos dev (irmã do marcelo dos irmãos dev)</h5>
+                <a href="https://github.com/daniellacortes/API-Fake-Trilha-Estudos">Visit Site</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Adiciona listener de evento para pesquisar em tempo real
+        document.getElementById('search').addEventListener('input', function() {
+            const searchInput = this.value.toLowerCase();
+            const items = document.querySelectorAll('.item');
+
+            items.forEach(item => {
+                const title = item.querySelector('h2').textContent.toLowerCase();
+                if (title.includes(searchInput)) {
+                    item.style.display = '';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
