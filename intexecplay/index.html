@@ -60,6 +60,24 @@
             font-size: 16px;
             white-space: pre-wrap;
         }
+
+        .input-container {
+            width: 80%;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            margin-top: 20px;
+        }
+
+        .input-container input {
+            width: 100%;
+            padding: 10px;
+            border-radius: 5px;
+            border: none;
+            font-size: 16px;
+            background-color: #1c1f26;
+            color: #61dafb;
+        }
     </style>
 </head>
 <body>
@@ -202,8 +220,8 @@
                     }
                 } else if (mode[0] == 7) {
                     if (token == "@m0") {
-                        createInput().then(input => {
-                            variables[varname[0]] = input;
+                        createInput().then(inputValue => {
+                            variables[varname[0]] = inputValue;
                             processToken();
                         });
                         return;
@@ -255,24 +273,27 @@
 
         function createInput() {
             return new Promise(resolve => {
+                const inputContainer = document.createElement('div');
+                inputContainer.classList.add('input-container');
                 const input = document.createElement('input');
                 input.type = 'text';
-                input.style.width = '80%';
+                input.placeholder = 'Input';
+                input.style.width = '100%';
                 input.style.padding = '10px';
-                input.style.marginTop = '20px';
                 input.style.borderRadius = '5px';
                 input.style.border = 'none';
                 input.style.fontSize = '16px';
                 input.style.backgroundColor = '#1c1f26';
                 input.style.color = '#61dafb';
-                document.body.appendChild(input);
+                inputContainer.appendChild(input);
+                document.body.appendChild(inputContainer);
 
                 input.focus();
 
                 input.addEventListener('keydown', function onKeyDown(event) {
                     if (event.key === 'Enter') {
                         const value = input.value;
-                        document.body.removeChild(input);
+                        document.body.removeChild(inputContainer);
                         const outputDiv = document.getElementById('output');
                         outputDiv.textContent += value + "\n";
                         resolve(value);
