@@ -60,24 +60,6 @@
             font-size: 16px;
             white-space: pre-wrap;
         }
-
-        .input-container {
-            width: 80%;
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            margin-top: 20px;
-        }
-
-        .input-container input {
-            width: 100%;
-            padding: 10px;
-            border-radius: 5px;
-            border: none;
-            font-size: 16px;
-            background-color: #1c1f26;
-            color: #61dafb;
-        }
     </style>
 </head>
 <body>
@@ -96,63 +78,40 @@
         function interpret(code) {
             let tokens = code.split(/[\s\t]+/);
             let string = [];
-            let index = 0;
 
-            function processToken() {
-                if (index >= tokens.length) return;
-
-                let token = tokens[index++];
-                
+            for (let token of tokens) {
                 if (mode[0] == 0) {
-                    switch (token) {
-                        case "@m1":
-                            mode[0] = 1;
-                            break;
-                        case "@m2":
-                            mode[0] = 2;
-                            break;
-                        case "@m3":
-                            mode[0] = 3;
-                            break;
-                        case "@m4":
-                            mode[0] = 4;
-                            varmode[0] = 0;
-                            break;
-                        case "@nl":
-                            output("\n");
-                            break;
-                        case "@spc":
-                            output(" ");
-                            break;
-                        case "@m5":
-                            mode[0] = 5;
-                            break;
-                        case "@prt":
-                            output(stack.pop());
-                            break;
-                        case "@m6":
-                            mode[0] = 6;
-                            break;
-                        case "@stk":
-                            output(JSON.stringify(stack));
-                            break;
-                        case "@m7":
-                            mode[0] = 7;
-                            break;
-                        case "@m8":
-                            mode[0] = 8;
-                            break;
-                        case "@m9":
-                            mode[0] = 9;
-                            break;
-                        case "@m10":
-                            mode[0] = 10;
-                            break;
-                        case "@clr":
-                            stack = [];
-                            break;
-                        default:
-                            break;
+                    if (token == "@m1") {
+                        mode[0] = 1;
+                    } else if (token == "@m2") {
+                        mode[0] = 2;
+                    } else if (token == "@m3") {
+                        mode[0] = 3;
+                    } else if (token == "@m4") {
+                        mode[0] = 4;
+                        varmode[0] = 0;
+                    } else if (token == "@nl") {
+                        output("\n");
+                    } else if (token == "@spc") {
+                        output(" ");
+                    } else if (token == "@m5") {
+                        mode[0] = 5;
+                    } else if (token == "@prt") {
+                        output(stack.pop());
+                    } else if (token == "@m6") {
+                        mode[0] = 6;
+                    } else if (token == "@stk") {
+                        output(JSON.stringify(stack));
+                    } else if (token == "@m7") {
+                        mode[0] = 7;
+                    } else if (token == "@m8") {
+                        mode[0] = 8;
+                    } else if (token == "@m9") {
+                        mode[0] = 9;
+                    } else if (token == "@m10") {
+                        mode[0] = 10;
+                    } else if (token == "@clr") {
+                        stack = [];
                     }
                 } else if (mode[0] == 1) {
                     if (token == "@m0") {
@@ -177,34 +136,28 @@
                         string.push(token);
                     }
                 } else if (mode[0] == 4) {
-                    switch (token) {
-                        case "@int":
-                            varmode[0] = 1;
-                            break;
-                        case "@flt":
-                            varmode[0] = 2;
-                            break;
-                        case "@str":
-                            varmode[0] = 3;
-                            break;
-                        case "@m0":
-                            if (varmode[0] == 3) {
-                                variables[varname[0]] = string.join(" ");
-                                string = [];
-                            }
-                            mode[0] = 0;
-                            break;
-                        default:
-                            if (varmode[0] == 0) {
-                                varname[0] = token;
-                            } else if (varmode[0] == 1) {
-                                variables[varname[0]] = parseInt(token);
-                            } else if (varmode[0] == 2) {
-                                variables[varname[0]] = parseFloat(token);
-                            } else if (varmode[0] == 3) {
-                                string.push(token);
-                            }
-                            break;
+                    if (token == "@int") {
+                        varmode[0] = 1;
+                    } else if (token == "@flt") {
+                        varmode[0] = 2;
+                    } else if (token == "@str") {
+                        varmode[0] = 3;
+                    } else if (token == "@m0") {
+                        if (varmode[0] == 3) {
+                            variables[varname[0]] = string.join(" ");
+                            string = [];
+                        }
+                        mode[0] = 0;
+                    } else {
+                        if (varmode[0] == 0) {
+                            varname[0] = token;
+                        } else if (varmode[0] == 1) {
+                            variables[varname[0]] = parseInt(token);
+                        } else if (varmode[0] == 2) {
+                            variables[varname[0]] = parseFloat(token);
+                        } else if (varmode[0] == 3) {
+                            string.push(token);
+                        }
                     }
                 } else if (mode[0] == 5) {
                     if (token == "@m0") {
@@ -220,11 +173,8 @@
                     }
                 } else if (mode[0] == 7) {
                     if (token == "@m0") {
-                        createInput().then(inputValue => {
-                            variables[varname[0]] = inputValue;
-                            processToken();
-                        });
-                        return;
+                        variables[varname[0]] = prompt("Input:");
+                        mode[0] = 0;
                     } else {
                         varname[0] = token;
                     }
@@ -249,15 +199,11 @@
                         stack.push(variables.get(token));
                     }
                 }
-                processToken();
             }
-
-            processToken();
         }
 
         function output(text) {
-            const outputDiv = document.getElementById('output');
-            outputDiv.textContent += text;
+            document.getElementById('output').textContent += text;
         }
 
         function runCode() {
@@ -267,39 +213,8 @@
             mode = [0];
             varmode = [0];
             varname = [""];
-            const code = document.getElementById('code').value;
+            let code = document.getElementById('code').value;
             interpret(code);
-        }
-
-        function createInput() {
-            return new Promise(resolve => {
-                const inputContainer = document.createElement('div');
-                inputContainer.classList.add('input-container');
-                const input = document.createElement('input');
-                input.type = 'text';
-                input.placeholder = 'Input';
-                input.style.width = '100%';
-                input.style.padding = '10px';
-                input.style.borderRadius = '5px';
-                input.style.border = 'none';
-                input.style.fontSize = '16px';
-                input.style.backgroundColor = '#1c1f26';
-                input.style.color = '#61dafb';
-                inputContainer.appendChild(input);
-                document.body.appendChild(inputContainer);
-
-                input.focus();
-
-                input.addEventListener('keydown', function onKeyDown(event) {
-                    if (event.key === 'Enter') {
-                        const value = input.value;
-                        document.body.removeChild(inputContainer);
-                        const outputDiv = document.getElementById('output');
-                        outputDiv.textContent += value + "\n";
-                        resolve(value);
-                    }
-                });
-            });
         }
     </script>
 </body>
