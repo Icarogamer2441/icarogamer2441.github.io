@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intexec Playground</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #282c34;
+            color: #61dafb;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        textarea {
+            width: 80%;
+            height: 150px;
+            margin-bottom: 20px;
+            padding: 10px;
+            border-radius: 5px;
+            border: none;
+            font-size: 16px;
+            background-color: #1c1f26;
+            color: #61dafb;
+            resize: none;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #61dafb;
+            color: #282c34;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #21a1f1;
+        }
+
+        #output {
+            width: 80%;
+            min-height: 100px;
+            padding: 10px;
+            margin-top: 20px;
+            border-radius: 5px;
+            background-color: #1c1f26;
+            color: #61dafb;
+            font-size: 16px;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <h1>Intexec Playground</h1>
+    <textarea id="code" placeholder="Type your intexec code here..."></textarea>
+    <button onclick="runCode()">Run Code</button>
+    <div id="output"></div>
+
+    <script>
+        let stack = [];
+        let variables = {};
+        let mode = [0];
+        let varmode = [0];
+        let varname = [""];
+
+        function interpret(code) {
+            let tokens = code.split(/[\s\t]+/);
+            let string = [];
+
+            for (let token of tokens) {
+                if (mode[0] == 0) {
+                    if (token == "@m1") {
+                        mode[0] = 1;
+                    } else if (token == "@m2") {
+                        mode[0] = 2;
+                    } else if (token == "@m3") {
+                        mode[0] = 3;
+                    } else if (token == "@m4") {
+                        mode[0] = 4;
+                        varmode[0] = 0;
+                    } else if (token == "@nl") {
+                        output("\n");
+                    } else if (token == "@spc") {
+                        output(" ");
+                    } else if (token == "@m5") {
+                        mode[0] = 5;
+                    } else if (token == "@prt") {
+                        output(stack.pop());
+                    } else if (token == "@m6") {
+                        mode[0] = 6;
+                    } else if (token == "@stk") {
+                        output(JSON.stringify(stack));
+                    }
+                } else if (mode[0] == 1) {
+                    if (token == "@m0") {
+                        output(string.join(" "));
+                        string = [];
+                        mode[0] = 0;
+                    } else {
+                        string.push(token);
+                    }
+                } else if (mode[0] == 2) {
+                    if (token == "@m0") {
+                        mode[0] = 0;
+                    } else {
+                        stack.push(parseInt(token));
+                    }
+                } else if (mode[0] == 3) {
+                    if (token == "@m0") {
+                        stack.push(string.join(" "));
+                        string = [];
+                        mode[0] = 0;
+                    } else {
+                        string.push(token);
+                    }
+                } else if (mode[0] == 4) {
+                    if (token == "@int") {
+                        varmode[0] = 1;
+                    } else if (token == "@flt") {
+                        varmode[0] = 2;
+                    } else if (token == "@str") {
+                        varmode[0] = 3;
+                    } else if (token == "@m0") {
+                        if (varmode[0] == 3) {
+                            variables[varname[0]] = string.join(" ");
+                            string = [];
+                        }
+                        mode[0] = 0;
+                    } else {
+                        if (varmode[0] == 0) {
+                            varname[0] = token;
+                        } else if (varmode[0] == 1) {
+                            variables[varname[0]] = parseInt(token);
+                        } else if (varmode[0] == 2) {
+                            variables[varname[0]] = parseFloat(token);
+                        } else if (varmode[0] == 3) {
+                            string.push(token);
+                        }
+                    }
+                } else if (mode[0] == 5) {
+                    if (token == "@m0") {
+                        mode[0] = 0;
+                    } else {
+                        stack.push(parseFloat(token));
+                    }
+                } else if (mode[0] == 6) {
+                    if (token == "@m0") {
+                        mode[0] = 0;
+                    } else {
+                        output(variables[token]);
+                    }
+                }
+            }
+        }
+
+        function output(text) {
+            document.getElementById('output').textContent += text;
+        }
+
+        function runCode() {
+            document.getElementById('output').textContent = "";
+            stack = [];
+            variables = {};
+            mode = [0];
+            varmode = [0];
+            varname = [""];
+            let code = document.getElementById('code').value;
+            interpret(code);
+        }
+    </script>
+</body>
+</html>
