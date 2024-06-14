@@ -74,6 +74,7 @@
         let mode = [0];
         let varmode = [0];
         let varname = [""];
+        let inputQueue = [];
 
         function interpret(code) {
             let tokens = code.split(/[\s\t]+/);
@@ -173,7 +174,12 @@
                     }
                 } else if (mode[0] == 7) {
                     if (token == "@m0") {
-                        variables[varname[0]] = prompt("Input:");
+                        // Wait for user input
+                        if (inputQueue.length > 0) {
+                            let userInput = inputQueue.shift();
+                            variables[varname[0]] = userInput;
+                            output(userInput + "\n");
+                        }
                         mode[0] = 0;
                     } else {
                         varname[0] = token;
@@ -214,7 +220,24 @@
             varmode = [0];
             varname = [""];
             let code = document.getElementById('code').value;
-            interpret(code);
+
+            // Clear inputQueue before running new code
+            inputQueue = [];
+
+            // Replace @inp tokens with actual user input
+            let lines = code.split('\n');
+            for (let line of lines) {
+                let tokens = line.split(/[\s\t]+/);
+                for (let i = 0; i < tokens.length; i++) {
+                    if (tokens[i] === "@inp") {
+                        let userInput = prompt("Input:");
+                        inputQueue.push(userInput);
+                        tokens[i] = "@m7"; // Replace @inp with @m7 for input handling
+                    }
+                }
+                let modifiedLine = tokens.join(' ');
+                interpret(modifiedLine);
+            }
         }
     </script>
 </body>
