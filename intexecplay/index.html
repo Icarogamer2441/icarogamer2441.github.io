@@ -60,6 +60,18 @@
             font-size: 16px;
             white-space: pre-wrap;
         }
+
+        #user-input {
+            width: 80%;
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            border: none;
+            font-size: 16px;
+            background-color: #1c1f26;
+            color: #61dafb;
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -67,6 +79,7 @@
     <textarea id="code" placeholder="Type your intexec code here..."></textarea>
     <button onclick="runCode()">Run Code</button>
     <div id="output"></div>
+    <input type="text" id="user-input" onkeydown="handleInput(event)">
 
     <script>
         let stack = [];
@@ -74,12 +87,16 @@
         let mode = [0];
         let varmode = [0];
         let varname = [""];
+        let inputResolve;
 
         function interpret(code) {
             let tokens = code.split(/[\s\t]+/);
             let string = [];
+            let index = 0;
 
-            for (let token of tokens) {
+            function next() {
+                if (index >= tokens.length) return;
+                let token = tokens[index++];
                 if (mode[0] == 0) {
                     if (token == "@m1") {
                         mode[0] = 1;
@@ -113,97 +130,148 @@
                     } else if (token == "@clr") {
                         stack = [];
                     }
+                    next();
                 } else if (mode[0] == 1) {
                     if (token == "@m0") {
                         output(string.join(" "));
                         string = [];
                         mode[0] = 0;
+                        next();
                     } else {
                         string.push(token);
+                        next();
                     }
                 } else if (mode[0] == 2) {
                     if (token == "@m0") {
                         mode[0] = 0;
+                        next();
                     } else {
                         stack.push(parseInt(token));
+                        next();
                     }
                 } else if (mode[0] == 3) {
                     if (token == "@m0") {
                         stack.push(string.join(" "));
                         string = [];
                         mode[0] = 0;
+                        next();
                     } else {
                         string.push(token);
+                        next();
                     }
                 } else if (mode[0] == 4) {
                     if (token == "@int") {
                         varmode[0] = 1;
+                        next();
                     } else if (token == "@flt") {
                         varmode[0] = 2;
+                        next();
                     } else if (token == "@str") {
                         varmode[0] = 3;
+                        next();
                     } else if (token == "@m0") {
                         if (varmode[0] == 3) {
                             variables[varname[0]] = string.join(" ");
                             string = [];
                         }
                         mode[0] = 0;
+                        next();
                     } else {
                         if (varmode[0] == 0) {
                             varname[0] = token;
+                            next();
                         } else if (varmode[0] == 1) {
                             variables[varname[0]] = parseInt(token);
+                            next();
                         } else if (varmode[0] == 2) {
                             variables[varname[0]] = parseFloat(token);
+                            next();
                         } else if (varmode[0] == 3) {
                             string.push(token);
+                            next();
                         }
                     }
                 } else if (mode[0] == 5) {
                     if (token == "@m0") {
                         mode[0] = 0;
+                        next();
                     } else {
                         stack.push(parseFloat(token));
+                        next();
                     }
                 } else if (mode[0] == 6) {
                     if (token == "@m0") {
                         mode[0] = 0;
+                        next();
                     } else {
                         output(variables[token]);
+                        next();
                     }
                 } else if (mode[0] == 7) {
                     if (token == "@m0") {
-                        variables[varname[0]] = prompt("Input:");
-                        mode[0] = 0;
+                        showInput().then(value => {
+                            variables[varname[0]] = value;
+                            mode[0] = 0;
+                            next();
+                        });
                     } else {
                         varname[0] = token;
+                        next();
                     }
                 } else if (mode[0] == 8) {
                     if (token == "@m0") {
                         variables[varname[0]] = parseInt(variables.get(varname[0]));
                         mode[0] = 0;
+                        next();
                     } else {
                         varname[0] = token;
+                        next();
                     }
                 } else if (mode[0] == 9) {
                     if (token == "@m0") {
                         variables[varname[0]] = parseFloat(variables.get(varname[0]));
                         mode[0] = 0;
+                        next();
                     } else {
                         varname[0] = token;
+                        next();
                     }
                 } else if (mode[0] == 10) {
                     if (token == "@m0") {
                         mode[0] = 0;
+                        next();
                     } else {
                         stack.push(variables.get(token));
+                        next();
                     }
                 }
             }
+
+            next();
         }
 
         function output(text) {
             document.getElementById('output').textContent += text;
+        }
+
+        function showInput() {
+            return new Promise(resolve => {
+                const input = document.getElementById('user-input');
+                input.style.display = 'block';
+                input.value = '';
+                input.focus();
+                inputResolve = resolve;
+            });
+        }
+
+        function handleInput(event) {
+            if (event.key === 'Enter') {
+                const input = document.getElementById('user-input');
+                const value = input.value;
+                input.style.display = 'none';
+                output(value + '\n');
+                inputResolve(value);
+            }
         }
 
         function runCode() {
