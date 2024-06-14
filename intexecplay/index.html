@@ -59,13 +59,24 @@
             color: #61dafb;
             font-size: 16px;
             white-space: pre-wrap;
+            overflow-y: auto;
+        }
+
+        #inputField {
+            width: 80%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            border: none;
+            font-size: 16px;
+            background-color: #1c1f26;
+            color: #61dafb;
         }
     </style>
 </head>
 <body>
     <h1>Intexec Playground</h1>
     <textarea id="code" placeholder="Type your intexec code here..."></textarea>
-    <button onclick="runCode()">Run Code</button>
     <div id="output"></div>
 
     <script>
@@ -74,7 +85,9 @@
         let mode = [0];
         let varmode = [0];
         let varname = [""];
-        let inputQueue = [];
+        let inputBuffer = [];
+        let inputCallback = null;
+        let outputElement = document.getElementById('output');
 
         function interpret(code) {
             let tokens = code.split(/[\s\t]+/);
@@ -105,6 +118,8 @@
                         output(JSON.stringify(stack));
                     } else if (token == "@m7") {
                         mode[0] = 7;
+                        waitForInput();
+                        return; // Pause execution until input is received
                     } else if (token == "@m8") {
                         mode[0] = 8;
                     } else if (token == "@m9") {
@@ -172,18 +187,6 @@
                     } else {
                         output(variables[token]);
                     }
-                } else if (mode[0] == 7) {
-                    if (token == "@m0") {
-                        // Wait for user input
-                        if (inputQueue.length > 0) {
-                            let userInput = inputQueue.shift();
-                            variables[varname[0]] = userInput;
-                            output(userInput + "\n");
-                        }
-                        mode[0] = 0;
-                    } else {
-                        varname[0] = token;
-                    }
                 } else if (mode[0] == 8) {
                     if (token == "@m0") {
                         variables[varname[0]] = parseInt(variables.get(varname[0]));
@@ -206,10 +209,35 @@
                     }
                 }
             }
+
+            // Continue execution if no input was requested or if input was processed
+            processInputBuffer();
         }
 
         function output(text) {
-            document.getElementById('output').textContent += text;
+            outputElement.textContent += text;
+            outputElement.scrollTop = outputElement.scrollHeight; // Auto-scroll to bottom
+        }
+
+        function waitForInput() {
+            document.getElementById('inputField').style.display = 'block';
+            document.getElementById('inputButton').style.display = 'block';
+            document.getElementById('inputField').focus();
+            inputCallback = function() {
+                let userInput = document.getElementById('inputField').value;
+                document.getElementById('inputField').value = '';
+                document.getElementById('inputField').style.display = 'none';
+                document.getElementById('inputButton').style.display = 'none';
+                inputBuffer.push(userInput);
+                processInputBuffer();
+            };
+        }
+
+        function processInputBuffer() {
+            if (inputBuffer.length > 0 && inputCallback !== null) {
+                let input = inputBuffer.shift();
+                inputCallback(input);
+            }
         }
 
         function runCode() {
@@ -221,8 +249,7 @@
             varname = [""];
             let code = document.getElementById('code').value;
 
-            // Clear inputQueue before running new code
-            inputQueue = [];
+            inputBuffer = [];
 
             // Replace @inp tokens with actual user input
             let lines = code.split('\n');
@@ -230,8 +257,6 @@
                 let tokens = line.split(/[\s\t]+/);
                 for (let i = 0; i < tokens.length; i++) {
                     if (tokens[i] === "@inp") {
-                        let userInput = prompt("Input:");
-                        inputQueue.push(userInput);
                         tokens[i] = "@m7"; // Replace @inp with @m7 for input handling
                     }
                 }
@@ -240,5 +265,7 @@
             }
         }
     </script>
+    <input type="text" id="inputField" style="display: none;" placeholder="Input...">
+    <button id="inputButton" style="display: none;" onclick="inputCallback()">Submit</button>
 </body>
 </html>
