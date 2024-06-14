@@ -102,6 +102,16 @@
                         mode[0] = 6;
                     } else if (token == "@stk") {
                         output(JSON.stringify(stack));
+                    } else if (token == "@m7") {
+                        mode[0] = 7;
+                    } else if (token == "@m8") {
+                        mode[0] = 8;
+                    } else if (token == "@m9") {
+                        mode[0] = 9;
+                    } else if (token == "@m10") {
+                        mode[0] = 10;
+                    } else if (token == "@clr") {
+                        stack = [];
                     }
                 } else if (mode[0] == 1) {
                     if (token == "@m0") {
@@ -160,6 +170,33 @@
                         mode[0] = 0;
                     } else {
                         output(variables[token]);
+                    }
+                } else if (mode[0] == 7) {
+                    if (token == "@m0") {
+                        variables[varname[0]] = prompt("Input:");
+                        mode[0] = 0;
+                    } else {
+                        varname[0] = token;
+                    }
+                } else if (mode[0] == 8) {
+                    if (token == "@m0") {
+                        variables[varname[0]] = parseInt(variables.get(varname[0]));
+                        mode[0] = 0;
+                    } else {
+                        varname[0] = token;
+                    }
+                } else if (mode[0] == 9) {
+                    if (token == "@m0") {
+                        variables[varname[0]] = parseFloat(variables.get(varname[0]));
+                        mode[0] = 0;
+                    } else {
+                        varname[0] = token;
+                    }
+                } else if (mode[0] == 10) {
+                    if (token == "@m0") {
+                        mode[0] = 0;
+                    } else {
+                        stack.push(variables.get(token));
                     }
                 }
             }
