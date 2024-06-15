@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>File System Simulator</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+        background-color: #f0f0f0;
+    }
+
+    h1 {
+        text-align: center;
+        color: #333;
+    }
+
+    #fileList {
+        list-style-type: none;
+        padding: 0;
+    }
+
+    .folder, .file {
+        margin-bottom: 5px;
+        padding: 5px;
+        background-color: #fff;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
+    .folder-content {
+        display: none;
+        margin-left: 20px;
+    }
+
+    .folder.opened .folder-content {
+        display: block;
+    }
+
+    .folder-button {
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: #007bff;
+        text-decoration: underline;
+        margin-right: 10px;
+    }
+
+    .create-folder-button, .create-file-button, .delete-button {
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        padding: 5px 10px;
+        margin-left: 5px;
+        cursor: pointer;
+        border-radius: 3px;
+    }
+
+    .create-folder-button:hover, .create-file-button:hover, .delete-button:hover {
+        background-color: #0056b3;
+    }
+
+    #editor {
+        width: 100%;
+        height: 200px;
+        margin-top: 10px;
+        padding: 10px;
+        box-sizing: border-box;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-family: monospace;
+    }
+
+    #saveFile {
+        margin-top: 10px;
+        padding: 5px 10px;
+        background-color: #28a745;
+        color: #fff;
+        border: none;
+        cursor: pointer;
+        border-radius: 3px;
+    }
+
+    #saveFile:hover {
+        background-color: #218838;
+    }
+</style>
+</head>
+<body>
+    <h1>File System Simulator</h1>
+
+    <div id="fileExplorer">
+        <ul id="fileList"></ul>
+    </div>
+
+    <div id="fileEditor">
+        <textarea id="editor" readonly></textarea>
+        <button id="saveFile" disabled>Save</button>
+    </div>
+
+<script>
+    // Simulated file system data structure
+    let fileSystem = {
+        "Person:/": {
+            "MYUser/": {
+                "Documents/": {},
+                "Downloads/": {}
+            }
+        }
+    };
+
+    let currentPath = "Person:/";
+    let currentFilePath = "";
+
+    // Function to generate the file list HTML
+    function generateFileList(files, parentElement) {
+        const ul = document.createElement('ul');
+
+        Object.keys(files).forEach(key => {
+            const li = document.createElement('li');
+
+            if (typeof files[key] === 'object' && files[key] !== null) {
+                li.classList.add('folder');
+                const folderButton = document.createElement('button');
+                folderButton.textContent = key;
+                folderButton.classList.add('folder-button');
+                li.appendChild(folderButton);
+
+                const createFolderButton = document.createElement('button');
+                createFolderButton.textContent = 'Create Folder';
+                createFolderButton.classList.add('create-folder-button');
+                li.appendChild(createFolderButton);
+
+                const createFileButton = document.createElement('button');
+                createFileButton.textContent = 'Create File';
+                createFileButton.classList.add('create-file-button');
+                li.appendChild(createFileButton);
+
+                const deleteButton = document.createElement('button');
+                deleteButton.textContent = 'Delete';
+                deleteButton.classList.add('delete-button');
+                li.appendChild(deleteButton);
+
+                const folderContent = document.createElement('div');
+                folderContent.classList.add('folder-content');
+                li.appendChild(folderContent);
+
+                generateFileList(files[key], folderContent);
+
+                folderButton.addEventListener('click', () => {
+                    li.classList.toggle('opened');
+                    toggleFolderContents(folderContent);
+                    currentPath = getFullPath(li);
+                });
+
+                createFolderButton.addEventListener('click', () => {
+                    const folderName = prompt("Enter folder name:");
+                    if (folderName) {
+                        const newPath = currentPath + folderName + "/";
+                        files[key][folderName + "/"] = {};
+                        generateFileList({ [folderName + "/"]: {} }, folderContent);
+                        updateFileSystem(newPath, files[key]);
+                    }
+                });
+
+                createFileButton.addEventListener('click', () => {
+                    const fileName = prompt("Enter file name:");
+                    if (fileName) {
+                        const newPath = currentPath + fileName;
+                        files[key][fileName] = ""; // Start with empty content
+                        const newFile = document.createElement('li');
+                        newFile.classList.add('file');
+                        newFile.textContent = fileName;
+                        newFile.addEventListener('click', () => {
+                            openFile(newPath, files[key][fileName]);
+                        });
+                        folderContent.appendChild(newFile);
+                        updateFileSystem(newPath, files[key]);
+                    }
+                });
+
+                deleteButton.addEventListener('click', () => {
+                    if (key === "Person:/") {
+                        alert("Cannot delete root directory.");
+                        return;
+                    }
+
+                    const confirmDelete = confirm(`Are you sure you want to delete "${key}"?`);
+                    if (confirmDelete) {
+                        delete files[key];
+                        li.remove();
+                        alert(`"${key}" has been successfully deleted.`);
+                    }
+                });
+
+            } else {
+                li.classList.add('file');
+                li.textContent = key;
+                li.addEventListener('click', () => {
+                    openFile(getFullPath(li), files[key]);
+                });
+
+                const deleteButton = document.createElement('button');
+                deleteButton.textContent = 'Delete';
+                deleteButton.classList.add('delete-button');
+                li.appendChild(deleteButton);
+
+                deleteButton.addEventListener('click', () => {
+                    if (key === "Person:/") {
+                        alert("Cannot delete root directory.");
+                        return;
+                    }
+
+                    const confirmDelete = confirm(`Are you sure you want to delete "${key}"?`);
+                    if (confirmDelete) {
+                        delete files[key];
+                        li.remove();
+                        alert(`"${key}" has been successfully deleted.`);
+                    }
+                });
+            }
+
+            ul.appendChild(li);
+        });
+
+        parentElement.appendChild(ul);
+    }
+
+    function toggleFolderContents(folderContent) {
+        folderContent.style.display = folderContent.style.display === 'none' ? 'block' : 'none';
+    }
+
+    function openFile(path, content) {
+        const editor = document.getElementById('editor');
+        editor.value = content || ''; // If content is null or undefined, set as empty
+        editor.readOnly = false;
+        editor.dataset.path = path;
+        currentFilePath = path;
+        document.getElementById('saveFile').disabled = false;
+    }
+
+    function saveFile() {
+        const editor = document.getElementById('editor');
+        const content = editor.value;
+        updateFileSystem(currentFilePath, content);
+        alert('File saved successfully!');
+    }
+
+    function getFullPath(element) {
+        let path = "";
+        while (element && element.tagName === 'LI') {
+            const button = element.querySelector('.folder-button');
+            if (button) {
+                path = button.textContent + "/" + path;
+            } else {
+                path = element.textContent + "/" + path;
+            }
+            element = element.parentElement.closest('li');
+        }
+        return "Person:/" + path;
+    }
+
+    function updateFileSystem(path, content) {
+        const segments = path.split("/").filter(segment => segment);
+        let current = fileSystem;
+
+        for (let i = 1; i < segments.length; i++) {
+            const segment = segments[i];
+            if (current[segment] && typeof current[segment] === 'object') {
+                current = current[segment];
+            }
+        }
+
+        // Update file content
+        current[segments[segments.length - 1]] = content;
+    }
+
+    // Initialize file list
+    const fileListContainer = document.getElementById('fileList');
+    generateFileList(fileSystem, fileListContainer);
+
+    // Event listener for "Save" button
+    document.getElementById('saveFile').addEventListener('click', saveFile);
+</script>
+
+</body>
+</html>
