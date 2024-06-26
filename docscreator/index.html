@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Docs creator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            height: 100vh;
+            margin: 0;
+            padding: 10px;
+        }
+        .container {
+            width: 80%;
+            display: flex;
+            justify-content: space-between;
+        }
+        .input-area {
+            width: 45%;
+        }
+        .output-area {
+            width: 45%;
+            border: 1px solid #ccc;
+            padding: 10px;
+            overflow: auto;
+        }
+        .code {
+            background-color: #f5f5f5;
+            padding: 10px;
+            border-radius: 5px;
+            white-space: pre-wrap;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        .sidebar {
+            width: 200px;
+            padding: 10px;
+            background-color: #f0f0f0;
+        }
+        .sidebar ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        .sidebar li {
+            margin-bottom: 5px;
+        }
+        .sidebar a {
+            text-decoration: none;
+            color: #333;
+        }
+        .sidebar a:hover {
+            font-weight: bold;
+        }
+        .button {
+            margin-top: 10px;
+            padding: 8px 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        .button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="input-area">
+            <h2>Docs code:</h2>
+            <textarea id="codeInput" rows="20" style="width: 100%;">
+# my section #
+hello world!
+''' '''
+# other section #
+you need to use ''' ''' to separate and create other section
+'''
+this is an code
+'''
+*
+new line used!</textarea>
+        </div>
+        <div class="output-area">
+            <div id="output"></div>
+            <button class="button" onclick="copyHtml()">Copy HTML</button>
+        </div>
+    </div>
+
+    <script>
+        const codeInput = document.getElementById('codeInput');
+        const outputDiv = document.getElementById('output');
+
+        // Função para salvar o conteúdo do textarea no localStorage
+        function saveContent() {
+            localStorage.setItem('documentationCode', codeInput.value);
+        }
+
+        // Função para carregar o conteúdo salvo do localStorage
+        function loadContent() {
+            const savedContent = localStorage.getItem('documentationCode');
+            if (savedContent) {
+                codeInput.value = savedContent;
+            }
+        }
+
+        // Atualiza o conteúdo de saída com base no código inserido
+        function updateOutput() {
+            const code = codeInput.value.trim();
+            outputDiv.innerHTML = code ? parseSections(code) : '<p>Insert the site code above.</p>';
+            updateSidebar(code);
+            saveContent(); // Salva o conteúdo atual após cada alteração
+        }
+
+        // Função para analisar o código e gerar HTML formatado
+        function parseSections(code) {
+            const sections = code.split("'''").map((section, index) => {
+                if (index % 2 === 0) {
+                    // Texto normal (fora das aspas)
+                    return { type: 'text', content: section.trim() };
+                } else {
+                    // Código dentro das aspas
+                    return { type: 'code', content: section.trim() };
+                }
+            });
+
+            let html = '';
+
+            let inSection = false;
+
+            sections.forEach(section => {
+                if (section.type === 'text') {
+                    // Verifica se é uma seção (começa e termina com #)
+                    const matches = section.content.match(/^#\s*(.*?)\s*#([\s\S]*?)$/);
+                    if (matches) {
+                        const title = matches[1].trim();
+                        const content = matches[2].trim();
+                        if (inSection) {
+                            html += '</section>'; // Fechar a seção anterior, se existir
+                        }
+                        html += `<section id="${title.replace(/\s+/g, '-')}">`;
+                        html += `<h2>${title}</h2>`;
+                        html += `<p>${content.replace(/\n\s*\*\s*/g, '<br/>')}</p>`;
+                        inSection = true;
+                    } else {
+                        html += `<p>${section.content.replace(/\n\s*\*\s*/g, '<br/>')}</p>`;
+                    }
+                } else if (section.type === 'code') {
+                    html += `<pre class="code">${section.content}</pre>`;
+                    inSection = false; // Encerra a seção ao encontrar código
+                }
+            });
+
+            if (inSection) {
+                html += '</section>'; // Finaliza a última seção, se existir
+            }
+
+            return html;
+        }
+
+        // Função para atualizar a barra lateral com links para cada seção
+        function updateSidebar(code) {
+            const sidebar = document.createElement('div');
+            sidebar.classList.add('sidebar');
+            sidebar.innerHTML = `
+                <h2>Sections</h2>
+                <ul>
+                    ${generateSidebarLinks(code)}
+                </ul>
+            `;
+
+            const currentSidebar = document.querySelector('.sidebar');
+            if (currentSidebar) {
+                currentSidebar.replaceWith(sidebar);
+            } else {
+                document.body.appendChild(sidebar);
+            }
+        }
+
+        // Função para gerar os links da barra lateral
+        function generateSidebarLinks(code) {
+            const sections = code.split("'''").map((section, index) => {
+                if (index % 2 === 0) {
+                    // Texto normal (fora das aspas)
+                    return section.trim();
+                }
+                return null;
+            }).filter(Boolean);
+            
+            let sidebarHTML = '';
+            sections.forEach(section => {
+                const matches = section.match(/^#\s*(.*?)\s*#([\s\S]*?)$/);
+                if (matches) {
+                    const title = matches[1].trim();
+                    sidebarHTML += `<li><a href="#${title.replace(/\s+/g, '-')}">${title}</a></li>`;
+                }
+            });
+
+            return sidebarHTML;
+        }
+
+        // Copiar HTML gerado
+        function copyHtml() {
+            const sidebarContent = document.querySelector('.sidebar').outerHTML;
+            const htmlToCopy = `<div class="container">${outputDiv.innerHTML}</div>` + sidebarContent + `<style>${getCss()}</style>`;
+            copyToClipboard(htmlToCopy);
+            alert('HTML copied to clipboard!');
+        }
+
+        // Função para obter o CSS da página
+        function getCss() {
+            const stylesheets = `
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    height: 100vh;
+    margin: 0;
+}
+.container {
+    width: 80%;
+    display: flex;
+    justify-content: space-between;
+    margin-left: 230px;
+}
+.code {
+    background-color: #f5f5f5;
+    padding: 10px;
+    border-radius: 5px;
+    white-space: pre-wrap;
+    font-family: 'Courier New', Courier, monospace;
+}
+.sidebar {
+    width: 200px;
+    padding: 10px;
+    background-color: #f0f0f0;
+    position: fixed;
+    height: 100%;
+}
+.sidebar ul {
+    list-style-type: none;
+    padding: 0;
+}
+.sidebar li {
+    margin-bottom: 5px;
+}
+.sidebar a {
+    text-decoration: none;
+    color: #333;
+}
+.sidebar a:hover {
+    font-weight: bold;
+}
+`
+            return stylesheets;
+        }
+
+        // Função auxiliar para copiar texto para a área de transferência
+        function copyToClipboard(text) {
+            const tempTextArea = document.createElement('textarea');
+            tempTextArea.value = text;
+            tempTextArea.style.position = 'fixed';
+            tempTextArea.style.opacity = 0;
+            document.body.appendChild(tempTextArea);
+            tempTextArea.focus();
+            tempTextArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempTextArea);
+        }
+
+        // Escuta por mudanças no textarea
+        codeInput.addEventListener('input', updateOutput);
+
+        // Carrega o conteúdo salvo ao carregar a página
+        window.addEventListener('load', () => {
+            loadContent();
+            updateOutput();
+        });
+    </script>
+</body>
+</html>
