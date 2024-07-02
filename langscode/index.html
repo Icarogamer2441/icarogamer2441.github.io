@@ -270,7 +270,7 @@ function lexer(input) {
         var char = input[current];
 
         // Tokenizing logic (simplified)
-        if (/\s/.test(char)) {
+        if (/\\s/.test(char)) {
             current++;
             continue;
         } else if (/[a-zA-Z]/.test(char)) {
@@ -295,7 +295,7 @@ function lexer(input) {
         } else if (char === '}') {
             tokens.push({ type: 'RIGHT_BRACE', value: '}' });
             current++;
-        } else if (/[\+\-\*\/\(\)]/.test(char)) {
+        } else if (/[\\+\\-\\*\\/\\(\\)]/.test(char)) {
             tokens.push({ type: 'OPERATOR', value: char });
             current++;
         } else if (char === '"') {
