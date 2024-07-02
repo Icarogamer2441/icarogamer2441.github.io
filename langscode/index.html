@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Language Source Code</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+    }
+    textarea {
+        width: 100%;
+        height: 200px;
+        font-size: 14px;
+        margin-bottom: 10px;
+    }
+    button {
+        padding: 10px;
+        font-size: 16px;
+        cursor: pointer;
+    }
+</style>
+</head>
+<body>
+    <h1>Language Source Code</h1>
+
+    <button onclick="showLexerParser()">Show Lexer & Parser</button>
+
+    <div id="codeContainer" style="display: none;">
+        <h2>Lexer & Parser Code</h2>
+        <textarea id="lexerParserCode" readonly></textarea>
+    </div>
+
+    <hr>
+
+    <textarea id="code" placeholder='Enter your Eitalang code here...'>{ 
+        var x = 10;
+        var y = 3.14; // Example of decimal number
+        var z = x + y;
+        var message = "Hello, world!";
+    }</textarea><br><br>
+    <button onclick="runParser()">Run Parser</button>
+    <hr>
+    <h2>AST Output:</h2>
+    <pre id="output"></pre>
+
+    <script>
+        // Lexer function
+        function lexer(input) {
+            var tokens = [];
+            var current = 0;
+
+            while (current < input.length) {
+                var char = input[current];
+
+                // Tokenizing logic (simplified)
+                if (/\s/.test(char)) {
+                    current++;
+                    continue;
+                } else if (/[a-zA-Z]/.test(char)) {
+                    // Identifier or keyword
+                    var value = '';
+                    while (/[a-zA-Z0-9]/.test(char)) {
+                        value += char;
+                        char = input[++current];
+                    }
+                    tokens.push({ type: 'IDENTIFIER', value: value });
+                } else if (/[0-9]/.test(char)) {
+                    // Number (including decimal point)
+                    var value = '';
+                    while (/[0-9\.]/.test(char)) {
+                        value += char;
+                        char = input[++current];
+                    }
+                    tokens.push({ type: 'NUMBER', value: parseFloat(value) });
+                } else if (char === '{') {
+                    tokens.push({ type: 'LEFT_BRACE', value: '{' });
+                    current++;
+                } else if (char === '}') {
+                    tokens.push({ type: 'RIGHT_BRACE', value: '}' });
+                    current++;
+                } else if (/[\+\-\*\/\(\)]/.test(char)) {
+                    tokens.push({ type: 'OPERATOR', value: char });
+                    current++;
+                } else if (char === '"') {
+                    // String
+                    var value = '';
+                    char = input[++current]; // Move past opening quote
+                    while (char !== '"') {
+                        value += char;
+                        char = input[++current];
+                    }
+                    tokens.push({ type: 'STRING', value: value });
+                    current++; // Move past closing quote
+                } else if (char === '=') {
+                    tokens.push({ type: 'EQUALS', value: '=' });
+                    current++;
+                } else if (char === ';') {
+                    tokens.push({ type: 'SEMICOLON', value: ';' });
+                    current++;
+                } else if (char === ',') {
+                    tokens.push({ type: 'COMMA', value: ',' });
+                    current++;
+                } else if (char === '.') {
+                    tokens.push({ type: 'DOT', value: '.' });
+                    current++;
+                } else if (char === ':') {
+                    tokens.push({ type: 'COLON', value: ':' });
+                    current++;
+                } else if (char === '!') {
+                    tokens.push({ type: 'EXCLAMATION', value: '!' });
+                    current++;
+                } else if (char === '?') {
+                    tokens.push({ type: 'QUESTION', value: '?' });
+                    current++;
+                } else if (char === '@') {
+                    tokens.push({ type: 'AT', value: '@' });
+                    current++;
+                } else if (char === '#') {
+                    tokens.push({ type: 'HASH', value: '#' });
+                    current++;
+                } else if (char === '&') {
+                    tokens.push({ type: 'AMPERSAND', value: '&' });
+                    current++;
+                } else if (char === '$') {
+                    tokens.push({ type: 'DOLLAR', value: '$' });
+                    current++;
+                } else if (char === '%') {
+                    tokens.push({ type: 'PERCENT', value: '%' });
+                    current++;
+                } else if (char === '^') {
+                    tokens.push({ type: 'CARET', value: '^' });
+                    current++;
+                } else if (char === '~') {
+                    tokens.push({ type: 'TILDE', value: '~' });
+                    current++;
+                } else if (char === '_') {
+                    tokens.push({ type: 'UNDERSCORE', value: '_' });
+                    current++;
+                } else if (char === '[') {
+                    tokens.push({ type: 'LEFT_BRACKET', value: '[' });
+                    current++;
+                } else if (char === ']') {
+                    tokens.push({ type: 'RIGHT_BRACKET', value: ']' });
+                    current++;
+                } else if (char === '|') {
+                    tokens.push({ type: 'PIPE', value: '|' });
+                    current++;
+                } else if (char === '<') {
+                    tokens.push({ type: 'LESS_THAN', value: '<' });
+                    current++;
+                } else if (char === '>') {
+                    tokens.push({ type: 'GREATER_THAN', value: '>' });
+                    current++;
+                } else {
+                    // Handle unrecognized characters
+                    console.warn('Unrecognized character: ' + char);
+                    current++; // Skip the unrecognized character
+                }
+            }
+
+            return tokens;
+        }
+
+        // Parser function to build AST
+        function parser(tokens) {
+            var current = 0;
+
+            function walk() {
+                var token = tokens[current];
+
+                if (token.type === 'LEFT_BRACE') {
+                    current++;
+
+                    var node = {
+                        type: 'BlockStatement',
+                        body: []
+                    };
+
+                    while (tokens[current].type !== 'RIGHT_BRACE') {
+                        node.body.push(walk());
+                    }
+
+                    current++; // Consume RIGHT_BRACE
+                    return node;
+                }
+
+                if (token.type === 'IDENTIFIER') {
+                    current++;
+                    return {
+                        type: 'Identifier',
+                        name: token.value
+                    };
+                }
+
+                if (token.type === 'NUMBER') {
+                    current++;
+                    return {
+                        type: 'NumberLiteral',
+                        value: token.value
+                    };
+                }
+
+                if (token.type === 'STRING') {
+                    current++;
+                    return {
+                        type: 'StringLiteral',
+                        value: token.value
+                    };
+                }
+
+                if (token.type === 'EQUALS') {
+                    current++;
+                    return {
+                        type: 'AssignmentExpression',
+                        left: tokens[current - 1].value, // Previous token (identifier)
+                        right: walk() // Next token (value)
+                    };
+                }
+
+                if (token.type === 'OPERATOR') {
+                    current++;
+                    return {
+                        type: 'Operator',
+                        value: token.value
+                    };
+                }
+
+                if (token.type === 'SEMICOLON') {
+                    current++;
+                    return {
+                        type: 'Semicolon',
+                        value: token.value
+                    };
+                }
+
+                if (token.type === 'COMMA') {
+                    current++;
+                    return {
+                        type: 'Comma',
+                        value: token.value
+                    };
+                }
+
+                // Handle unrecognized tokens
+                throw new TypeError('Unrecognized token: ' + token.type);
+            }
+
+            var ast = {
+                type: 'Program',
+                body: []
+            };
+
+            while (current < tokens.length) {
+                ast.body.push(walk());
+            }
+
+            return ast;
+        }
+
+        function showLexerParser() {
+            var lexerParserCode = `
+// Lexer function
+function lexer(input) {
+    var tokens = [];
+    var current = 0;
+
+    while (current < input.length) {
+        var char = input[current];
+
+        // Tokenizing logic (simplified)
+        if (/\s/.test(char)) {
+            current++;
+            continue;
+        } else if (/[a-zA-Z]/.test(char)) {
+            // Identifier or keyword
+            var value = '';
+            while (/[a-zA-Z0-9]/.test(char)) {
+                value += char;
+                char = input[++current];
+            }
+            tokens.push({ type: 'IDENTIFIER', value: value });
+        } else if (/[0-9]/.test(char)) {
+            // Number (including decimal point)
+            var value = '';
+            while (/[0-9\.]/.test(char)) {
+                value += char;
+                char = input[++current];
+            }
+            tokens.push({ type: 'NUMBER', value: parseFloat(value) });
+        } else if (char === '{') {
+            tokens.push({ type: 'LEFT_BRACE', value: '{' });
+            current++;
+        } else if (char === '}') {
+            tokens.push({ type: 'RIGHT_BRACE', value: '}' });
+            current++;
+        } else if (/[\+\-\*\/\(\)]/.test(char)) {
+            tokens.push({ type: 'OPERATOR', value: char });
+            current++;
+        } else if (char === '"') {
+            // String
+            var value = '';
+            char = input[++current]; // Move past opening quote
+            while (char !== '"') {
+                value += char;
+                char = input[++current];
+            }
+            tokens.push({ type: 'STRING', value: value });
+            current++; // Move past closing quote
+        } else if (char === '=') {
+            tokens.push({ type: 'EQUALS', value: '=' });
+            current++;
+        } else if (char === ';') {
+            tokens.push({ type: 'SEMICOLON', value: ';' });
+            current++;
+        } else if (char === ',') {
+            tokens.push({ type: 'COMMA', value: ',' });
+            current++;
+        } else if (char === '.') {
+            tokens.push({ type: 'DOT', value: '.' });
+            current++;
+        } else if (char === ':') {
+            tokens.push({ type: 'COLON', value: ':' });
+            current++;
+        } else if (char === '!') {
+            tokens.push({ type: 'EXCLAMATION', value: '!' });
+            current++;
+        } else if (char === '?') {
+            tokens.push({ type: 'QUESTION', value: '?' });
+            current++;
+        } else if (char === '@') {
+            tokens.push({ type: 'AT', value: '@' });
+            current++;
+        } else if (char === '#') {
+            tokens.push({ type: 'HASH', value: '#' });
+            current++;
+        } else if (char === '&') {
+            tokens.push({ type: 'AMPERSAND', value: '&' });
+            current++;
+        } else if (char === '$') {
+            tokens.push({ type: 'DOLLAR', value: '$' });
+            current++;
+        } else if (char === '%') {
+            tokens.push({ type: 'PERCENT', value: '%' });
+            current++;
+        } else if (char === '^') {
+            tokens.push({ type: 'CARET', value: '^' });
+            current++;
+        } else if (char === '~') {
+            tokens.push({ type: 'TILDE', value: '~' });
+            current++;
+        } else if (char === '_') {
+            tokens.push({ type: 'UNDERSCORE', value: '_' });
+            current++;
+        } else if (char === '[') {
+            tokens.push({ type: 'LEFT_BRACKET', value: '[' });
+            current++;
+        } else if (char === ']') {
+            tokens.push({ type: 'RIGHT_BRACKET', value: ']' });
+            current++;
+        } else if (char === '|') {
+            tokens.push({ type: 'PIPE', value: '|' });
+            current++;
+        } else if (char === '<') {
+            tokens.push({ type: 'LESS_THAN', value: '<' });
+            current++;
+        } else if (char === '>') {
+            tokens.push({ type: 'GREATER_THAN', value: '>' });
+            current++;
+        } else {
+            // Handle unrecognized characters
+            console.warn('Unrecognized character: ' + char);
+            current++; // Skip the unrecognized character
+        }
+    }
+
+    return tokens;
+}
+
+// Parser function to build AST
+function parser(tokens) {
+    var current = 0;
+
+    function walk() {
+        var token = tokens[current];
+
+        if (token.type === 'LEFT_BRACE') {
+            current++;
+
+            var node = {
+                type: 'BlockStatement',
+                body: []
+            };
+
+            while (tokens[current].type !== 'RIGHT_BRACE') {
+                node.body.push(walk());
+            }
+
+            current++; // Consume RIGHT_BRACE
+            return node;
+        }
+
+        if (token.type === 'IDENTIFIER') {
+            current++;
+            return {
+                type: 'Identifier',
+                name: token.value
+            };
+        }
+
+        if (token.type === 'NUMBER') {
+            current++;
+            return {
+                type: 'NumberLiteral',
+                value: token.value
+            };
+        }
+
+        if (token.type === 'STRING') {
+            current++;
+            return {
+                type: 'StringLiteral',
+                value: token.value
+            };
+        }
+
+        if (token.type === 'EQUALS') {
+            current++;
+            return {
+                type: 'AssignmentExpression',
+                left: tokens[current - 1].value, // Previous token (identifier)
+                right: walk() // Next token (value)
+            };
+        }
+
+        if (token.type === 'OPERATOR') {
+            current++;
+            return {
+                type: 'Operator',
+                value: token.value
+            };
+        }
+
+        if (token.type === 'SEMICOLON') {
+            current++;
+            return {
+                type: 'Semicolon',
+                value: token.value
+            };
+        }
+
+        if (token.type === 'COMMA') {
+            current++;
+            return {
+                type: 'Comma',
+                value: token.value
+            };
+        }
+
+        // Handle unrecognized tokens
+        throw new TypeError('Unrecognized token: ' + token.type);
+    }
+
+    var ast = {
+        type: 'Program',
+        body: []
+    };
+
+    while (current < tokens.length) {
+        ast.body.push(walk());
+    }
+
+    return ast;
+}
+            `;
+            document.getElementById('lexerParserCode').value = lexerParserCode.trim();
+            document.getElementById('codeContainer').style.display = 'block';
+        }
+
+        // Function to run parser and display AST
+        function runParser() {
+            var code = document.getElementById('code').value;
+            var tokens = lexer(code);
+            var ast = parser(tokens);
+            var outputElement = document.getElementById('output');
+            outputElement.textContent = JSON.stringify(ast, null, 2);
+        }
+    </script>
+</body>
+</html>
