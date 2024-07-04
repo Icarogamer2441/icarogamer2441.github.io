@@ -73,9 +73,6 @@
                         p.applyForce(force);
                         other.applyForce(force.mult(-1));
                     }
-                    if (d < particleSize) {
-                        resolveCollision(p, other);
-                    }
                 }
                 p.update();
                 p.display();
@@ -93,36 +90,15 @@
             particles.push(new Particle(mouseX, mouseY));
         }
 
-        function resolveCollision(p1, p2) {
-            let collisionVector = p5.Vector.sub(p2.pos, p1.pos);
-            let distance = collisionVector.mag();
-            let overlap = 0.5 * (distance - particleSize);
-
-            p1.pos.sub(p5.Vector.mult(collisionVector, overlap / distance));
-            p2.pos.add(p5.Vector.mult(collisionVector, overlap / distance));
-
-            let normal = collisionVector.copy().normalize();
-            let relativeVelocity = p5.Vector.sub(p2.vel, p1.vel);
-            let speed = relativeVelocity.dot(normal);
-
-            if (speed > 0) return;
-
-            let impulse = 2 * speed / (p1.mass + p2.mass);
-            p1.vel.sub(p5.Vector.mult(normal, impulse * p2.mass));
-            p2.vel.add(p5.Vector.mult(normal, impulse * p1.mass));
-        }
-
         class Particle {
             constructor(x, y) {
                 this.pos = createVector(x, y);
                 this.vel = createVector(0, 0);
                 this.acc = createVector(0, 0);
-                this.mass = 1;
             }
 
             applyForce(force) {
-                let f = p5.Vector.div(force, this.mass);
-                this.acc.add(f);
+                this.acc.add(force);
             }
 
             update() {
