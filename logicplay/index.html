@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Complogiclang Playground</title>
+    <title>Complogiclaaang Playground</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -232,6 +232,7 @@
                 if (!in_str) {
                     if (token.includes(':')) {
                         let parts = token.split(':');
+                        tokens.push([T_CUSTOM, parts[0]]);
                         tokens.push([T_STRING, parts[1].trim().replace(/\"/g, '')]);
                     } else {
                         switch (token) {
