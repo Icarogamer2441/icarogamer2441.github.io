@@ -67,16 +67,30 @@
                 for (let j = i + 1; j < particles.length; j++) {
                     let other = particles[j];
                     let d = dist(p.pos.x, p.pos.y, other.pos.x, other.pos.y);
-                    if (d < density) {
-                        let force = p5.Vector.sub(p.pos, other.pos);
-                        force.setMag((density - d) * 0.1);
-                        p.applyForce(force);
-                        other.applyForce(force.mult(-1));
+                    if (d < particleSize) {
+                        resolveCollision(p, other);
                     }
                 }
                 p.update();
                 p.display();
             }
+        }
+
+        function resolveCollision(p1, p2) {
+            let collisionVector = p5.Vector.sub(p1.pos, p2.pos);
+            let distance = collisionVector.mag();
+            let overlap = 0.5 * (distance - particleSize);
+
+            p1.pos.sub(collisionVector.copy().setMag(overlap));
+            p2.pos.add(collisionVector.copy().setMag(overlap));
+
+            let collisionNormal = collisionVector.normalize();
+            let relativeVelocity = p5.Vector.sub(p1.vel, p2.vel);
+            let speed = relativeVelocity.dot(collisionNormal);
+            let impulse = collisionNormal.mult(speed);
+
+            p1.vel.sub(impulse);
+            p2.vel.add(impulse);
         }
 
         function updateSettings() {
