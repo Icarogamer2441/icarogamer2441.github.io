@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complogiclang Playground</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        #editor {
+            width: 100%;
+            height: 300px;
+        }
+        #file-system {
+            margin-bottom: 20px;
+        }
+        #file-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        #file-list li {
+            margin-bottom: 5px;
+        }
+        #file-list li button {
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Complogiclang Playground</h1>
+    <div id="file-system">
+        <input type="text" id="file-name" placeholder="File name (e.g., test.logc)">
+        <button onclick="createFile()">Create File</button>
+        <ul id="file-list"></ul>
+    </div>
+    <textarea id="editor" placeholder="Write your complogiclang code here..."></textarea>
+    <button onclick="saveFile()">Save File</button>
+    <button onclick="runCode()">Run Code</button>
+    <pre id="output"></pre>
+
+    <script>
+        let fileSystem = {};
+
+        function createFile() {
+            const fileName = document.getElementById('file-name').value.trim();
+            if (fileName && !fileSystem[fileName]) {
+                fileSystem[fileName] = '';
+                updateFileList();
+                alert(`File ${fileName} created.`);
+            } else {
+                alert('Invalid file name or file already exists.');
+            }
+        }
+
+        function updateFileList() {
+            const fileList = document.getElementById('file-list');
+            fileList.innerHTML = '';
+            for (const fileName in fileSystem) {
+                const li = document.createElement('li');
+                li.textContent = fileName;
+                const loadButton = document.createElement('button');
+                loadButton.textContent = 'Load';
+                loadButton.onclick = () => loadFile(fileName);
+                li.appendChild(loadButton);
+                fileList.appendChild(li);
+            }
+        }
+
+        function loadFile(fileName) {
+            document.getElementById('editor').value = fileSystem[fileName];
+        }
+
+        function saveFile() {
+            const fileName = document.getElementById('file-name').value.trim();
+            if (fileName && fileSystem[fileName] !== undefined) {
+                fileSystem[fileName] = document.getElementById('editor').value;
+                alert(`File ${fileName} saved.`);
+            } else {
+                alert('Invalid file name.');
+            }
+        }
+
+        function runCode() {
+            const code = document.getElementById('editor').value;
+            const output = document.getElementById('output');
+            output.textContent = '';
+
+            try {
+                const result = interpret(code);
+                output.textContent = result;
+            } catch (error) {
+                output.textContent = 'Error: ' + error.message;
+            }
+        }
+
+        // Complogiclang interpreter code (simplified for this example)
+        function interpret(code) {
+            let logic = new Logical();
+            let tokens = Lex(code);
+            let tokenpos = 0;
+            let output = '';
+
+            while (tokenpos < tokens.length) {
+                let token = tokens[tokenpos++];
+                switch (token[0]) {
+                    case T_NOT:
+                        logic.NOT();
+                        break;
+                    case T_AND:
+                        logic.AND();
+                        break;
+                    case T_OUTPUT:
+                        logic.output();
+                        break;
+                    case T_BINDIGIT:
+                        logic.BINDIGIT();
+                        break;
+                    case T_PRTOUT:
+                        output += logic.prtout();
+                        break;
+                    case T_PRTOUTS:
+                        output += logic.prtouts();
+                        break;
+                    case T_PRTRTN:
+                        output += logic.prtrtn();
+                        break;
+                    case T_START:
+                        logic.start();
+                        break;
+                    case T_OUTNOT:
+                        logic.OUTNOT();
+                        break;
+                    default:
+                        throw new Error('Unknown token: ' + token[0]);
+                }
+            }
+
+            return output;
+        }
+
+        class Logical {
+            constructor() {
+                this.outputs = [];
+                this.result = true;
+            }
+
+            output() {
+                this.outputs.push(this.result);
+            }
+
+            start() {
+                this.result = true;
+            }
+
+            AND() {
+                let A = this.outputs.pop();
+                let B = this.result;
+                this.result = A && B;
+            }
+
+            NOT() {
+                this.result = !this.result;
+            }
+
+            BINDIGIT() {
+                let B = this.outputs.pop();
+                let C = this.outputs.pop();
+                let D = this.outputs.pop();
+                let A = this.result;
+                let decimal_value = A * 8 + B * 4 + C * 2 + D * 1;
+                console.log(decimal_value);
+            }
+
+            prtout() {
+                return this.outputs.pop() + '\n';
+            }
+
+            prtouts() {
+                return this.outputs + '\n';
+            }
+
+            prtrtn() {
+                return this.result + '\n';
+            }
+
+            OUTNOT() {
+                let INPUT = this.outputs.pop();
+                this.result = !INPUT;
+            }
+        }
+
+        function Lex(code) {
+            const splitted = code.split(/\s+/);
+            let tokens = [];
+            let in_str = false;
+            let finalstr = [];
+
+            for (let token of splitted) {
+                if (!in_str) {
+                    if (token.startsWith('"')) {
+                        if (token.endsWith('"')) {
+                            tokens.push([T_STRING, token.slice(1, -1)]);
+                        } else {
+                            in_str = true;
+                            finalstr.push(token.slice(1));
+                        }
+                    } else {
+                        switch (token) {
+                            case 'and':
+                                tokens.push([T_AND]);
+                                break;
+                            case 'not':
+                                tokens.push([T_NOT]);
+                                break;
+                            case 'out':
+                                tokens.push([T_OUTPUT]);
+                                break;
+                            case 'prtout':
+                                tokens.push([T_PRTOUT]);
+                                break;
+                            case 'prtouts':
+                                tokens.push([T_PRTOUTS]);
+                                break;
+                            case 'bdigit':
+                                tokens.push([T_BINDIGIT]);
+                                break;
+                            case 'onot':
+                                tokens.push([T_OUTNOT]);
+                                break;
+                            case 'prtrtn':
+                                tokens.push([T_PRTRTN]);
+                                break;
+                            case 'start':
+                                tokens.push([T_START]);
+                                break;
+                            default:
+                                tokens.push([T_CUSTOM, token]);
+                                break;
+                        }
+                    }
+                } else {
+                    if (token.endsWith('"')) {
+                        finalstr.push(token.slice(0, -1));
+                        tokens.push([T_STRING, finalstr.join(' ')]);
+                        finalstr = [];
+                        in_str = false;
+                    } else {
+                        finalstr.push(token);
+                    }
+                }
+            }
+
+            return tokens;
+        }
+
+        const T_STRING = 0;
+        const T_AND = 1;
+        const T_NOT = 2;
+        const T_OUTPUT = 3;
+        const T_PRTOUT = 4;
+        const T_PRTOUTS = 5;
+        const T_BINDIGIT = 6;
+        const T_PRTRTN = 7;
+        const T_OUTNOT = 8;
+        const T_IMPORT = 9;
+        const T_START = 10;
+        const T_CUSTOM = 11;
+    </script>
+</body>
+</html>
