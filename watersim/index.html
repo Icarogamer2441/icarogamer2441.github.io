@@ -117,7 +117,7 @@
                     let d = dist(p.pos.x, p.pos.y, mousePos.x, mousePos.y);
                     if (d >= 50 && d <= 70) {
                         let force = p5.Vector.sub(p.pos, mousePos);
-                        force.setMag(map(d, 200, 200, 50, 0));
+                        force.setMag(map(d, 200, 200, 0, 0));
                         p.applyForce(force);
                     }
                 }
