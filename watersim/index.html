@@ -41,7 +41,8 @@
         let particles = [];
         let density, particleSize, viscosity, gravity;
         let repelForce = 0;
-        let addingParticles = false;
+        let repelRadius = 100; // Raio de repulsão
+        let isRepelling = false;
 
         function setup() {
             let canvas = createCanvas(800, 600);
@@ -63,9 +64,9 @@
         function draw() {
             background(255);
 
-            // Adicionar partículas ao segurar o botão esquerdo do mouse
-            if (addingParticles && mouseButton === LEFT) {
-                particles.push(new Particle(mouseX, mouseY));
+            // Repelir partículas próximas ao mouse ao segurar o botão do meio
+            if (isRepelling) {
+                repelParticles();
             }
 
             for (let i = 0; i < particles.length; i++) {
@@ -79,17 +80,6 @@
                         force.setMag((density - d) * 0.1);
                         p.applyForce(force);
                         other.applyForce(force.mult(-1));
-                    }
-                }
-
-                // Repelir com o botão do meio do mouse
-                if (repelForce > 0 && mouseButton === CENTER) {
-                    let mousePos = createVector(mouseX, mouseY);
-                    let d = dist(p.pos.x, p.pos.y, mousePos.x, mousePos.y);
-                    if (d < 100) {
-                        let force = p5.Vector.sub(p.pos, mousePos);
-                        force.setMag(map(d, 0, 100, repelForce, 0));
-                        p.applyForce(force);
                     }
                 }
 
@@ -109,18 +99,30 @@
             repelForce += event.delta;
         }
 
+        function repelParticles() {
+            let mousePos = createVector(mouseX, mouseY);
+            for (let i = 0; i < particles.length; i++) {
+                let p = particles[i];
+                let d = dist(p.pos.x, p.pos.y, mousePos.x, mousePos.y);
+                if (d < repelRadius) {
+                    let force = p5.Vector.sub(p.pos, mousePos);
+                    force.setMag(map(d, 0, repelRadius, repelForce, 0));
+                    p.applyForce(force);
+                }
+            }
+        }
+
         function mousePressed() {
-            if (mouseButton === LEFT) {
-                addingParticles = true;
+            if (mouseButton === CENTER) {
+                isRepelling = true;
+            } else if (mouseButton === LEFT) {
+                particles.push(new Particle(mouseX, mouseY));
             }
         }
 
         function mouseReleased() {
-            if (mouseButton === LEFT) {
-                addingParticles = false;
-            }
             if (mouseButton === CENTER) {
-                repelForce = 0; // Reinicia a força de repulsão ao soltar o botão do meio do mouse
+                isRepelling = false;
             }
         }
 
