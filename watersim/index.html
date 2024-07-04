@@ -19,6 +19,9 @@
         .controls label {
             margin-right: 10px;
         }
+        #liquidCanvas {
+            border: 1px solid black;
+        }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
 </head>
@@ -33,7 +36,7 @@
         <label for="gravity">Gravidade:</label>
         <input type="range" id="gravity" min="0.1" max="2" step="0.1" value="1">
     </div>
-    <canvas id="liquidCanvas"></canvas>
+    <div id="liquidCanvas"></div>
     <script>
         let particles = [];
         let density, particleSize, viscosity, gravity;
@@ -70,6 +73,10 @@
             particleSize = select('#particleSize').value();
             viscosity = select('#viscosity').value();
             gravity = select('#gravity').value();
+        }
+
+        function mouseDragged() {
+            particles.push(new Particle(mouseX, mouseY));
         }
 
         class Particle {
