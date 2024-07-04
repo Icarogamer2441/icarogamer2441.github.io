@@ -44,9 +44,6 @@
         function setup() {
             let canvas = createCanvas(800, 600);
             canvas.parent('liquidCanvas');
-            for (let i = 0; i < 200; i++) {
-                particles.push(new Particle(random(width), random(height)));
-            }
 
             density = select('#density').value();
             particleSize = select('#particleSize').value();
