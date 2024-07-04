@@ -154,7 +154,7 @@
                         logic.OUTNOT();
                         break;
                     case T_CUSTOM:
-                        const fileName = token[1] + ".logc";
+                        const fileName = token[1];
                         if (fileSystem[fileName]) {
                             const importedCode = fileSystem[fileName];
                             const importedTokens = Lex(importedCode);
