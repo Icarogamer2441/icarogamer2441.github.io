@@ -63,6 +63,16 @@
             background(255);
             particles.forEach(p => {
                 p.applyForce(createVector(0, gravity));
+                particles.forEach(other => {
+                    if (p !== other) {
+                        let d = dist(p.pos.x, p.pos.y, other.pos.x, other.pos.y);
+                        if (d < density) {
+                            let force = p5.Vector.sub(p.pos, other.pos);
+                            force.setMag((density - d) * 0.05);
+                            p.applyForce(force);
+                        }
+                    }
+                });
                 p.update();
                 p.display();
             });
