@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simulação e Física de Líquidos com p5.js</title>
+    <title>Simulação de Física de Líquidos com p5.js</title>
     <style>
         body {
             display: flex;
@@ -117,7 +117,7 @@
                     let d = dist(p.pos.x, p.pos.y, mousePos.x, mousePos.y);
                     if (d >= 50 && d <= 70) {
                         let force = p5.Vector.sub(p.pos, mousePos);
-                        force.setMag(map(d, 50, 70, 20, 0)); // Aumento da força de repulsão para 20
+                        force.setMag(map(d, 50, 70, 30, 0)); // Aumento da força de repulsão para 30
                         p.applyForce(force);
                     }
                 }
