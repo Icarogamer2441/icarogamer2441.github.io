@@ -105,7 +105,7 @@
             let relativeVelocity = p5.Vector.sub(p2.vel, p1.vel);
             let speed = relativeVelocity.dot(normal);
 
-            if (speed < 0) return;
+            if (speed > 0) return;
 
             let impulse = 2 * speed / (p1.mass + p2.mass);
             p1.vel.sub(p5.Vector.mult(normal, impulse * p2.mass));
