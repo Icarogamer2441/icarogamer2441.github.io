@@ -153,9 +153,10 @@
                     case T_OUTNOT:
                         logic.OUTNOT();
                         break;
-                    case T_STRING:
-                        if (fileSystem[token[1]]) {
-                            const importedCode = fileSystem[token[1]];
+                    case T_CUSTOM:
+                        const fileName = token[1] + ".logc";
+                        if (fileSystem[fileName]) {
+                            const importedCode = fileSystem[fileName];
                             const importedTokens = Lex(importedCode);
                             tokens.splice(tokenpos, 0, ...importedTokens);
                         } else {
