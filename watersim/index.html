@@ -42,7 +42,6 @@
         let density, particleSize, viscosity, gravity;
         let repelForce = 0;
         let addingParticles = false;
-        let repelAllForce = 0;
 
         function setup() {
             let canvas = createCanvas(800, 600);
@@ -94,17 +93,6 @@
                     }
                 }
 
-                // Repelir todas as partículas ao segurar a tecla 'R'
-                if (repelAllForce > 0 && keyIsDown(82)) { // 82 é o código da tecla 'R'
-                    let mousePos = createVector(mouseX, mouseY);
-                    let d = dist(p.pos.x, p.pos.y, mousePos.x, mousePos.y);
-                    if (d < 50) {
-                        let force = p5.Vector.sub(p.pos, mousePos);
-                        force.setMag(map(d, 0, 50, repelAllForce, 0));
-                        p.applyForce(force);
-                    }
-                }
-
                 p.update();
                 p.display();
             }
@@ -119,6 +107,21 @@
 
         function changeRepelForce(event) {
             repelForce += event.delta;
+        }
+
+        function keyPressed() {
+            if (key === 'r' || key === 'R') {
+                let mousePos = createVector(mouseX, mouseY);
+                for (let i = 0; i < particles.length; i++) {
+                    let p = particles[i];
+                    let d = dist(p.pos.x, p.pos.y, mousePos.x, mousePos.y);
+                    if (d >= 50 && d <= 70) {
+                        let force = p5.Vector.sub(p.pos, mousePos);
+                        force.setMag(map(d, 50, 70, 10, 0));
+                        p.applyForce(force);
+                    }
+                }
+            }
         }
 
         function mousePressed() {
