@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulação de Física de Líquidos com p5.js</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #f0f0f0;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        .controls {
+            margin: 10px 0;
+        }
+        .controls label {
+            margin-right: 10px;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+</head>
+<body>
+    <div class="controls">
+        <label for="density">Densidade:</label>
+        <input type="range" id="density" min="10" max="100" value="50">
+        <label for="particleSize">Tamanho das Partículas:</label>
+        <input type="range" id="particleSize" min="5" max="20" value="10">
+        <label for="viscosity">Viscosidade:</label>
+        <input type="range" id="viscosity" min="0" max="0.1" step="0.01" value="0.02">
+        <label for="gravity">Gravidade:</label>
+        <input type="range" id="gravity" min="0.1" max="2" step="0.1" value="1">
+    </div>
+    <canvas id="liquidCanvas"></canvas>
+    <script>
+        let particles = [];
+        let density, particleSize, viscosity, gravity;
+
+        function setup() {
+            let canvas = createCanvas(800, 600);
+            canvas.parent('liquidCanvas');
+            for (let i = 0; i < 200; i++) {
+                particles.push(new Particle(random(width), random(height)));
+            }
+
+            density = select('#density').value();
+            particleSize = select('#particleSize').value();
+            viscosity = select('#viscosity').value();
+            gravity = select('#gravity').value();
+
+            select('#density').input(updateSettings);
+            select('#particleSize').input(updateSettings);
+            select('#viscosity').input(updateSettings);
+            select('#gravity').input(updateSettings);
+        }
+
+        function draw() {
+            background(255);
+            particles.forEach(p => {
+                p.applyForce(createVector(0, gravity));
+                p.update();
+                p.display();
+            });
+        }
+
+        function updateSettings() {
+            density = select('#density').value();
+            particleSize = select('#particleSize').value();
+            viscosity = select('#viscosity').value();
+            gravity = select('#gravity').value();
+        }
+
+        class Particle {
+            constructor(x, y) {
+                this.pos = createVector(x, y);
+                this.vel = createVector(0, 0);
+                this.acc = createVector(0, 0);
+            }
+
+            applyForce(force) {
+                this.acc.add(force);
+            }
+
+            update() {
+                this.vel.add(this.acc);
+                this.vel.mult(1 - viscosity);
+                this.pos.add(this.vel);
+                this.acc.mult(0);
+
+                if (this.pos.y > height - particleSize / 2) {
+                    this.pos.y = height - particleSize / 2;
+                    this.vel.y *= -0.5;
+                }
+                if (this.pos.y < particleSize / 2) {
+                    this.pos.y = particleSize / 2;
+                    this.vel.y *= -0.5;
+                }
+                if (this.pos.x > width - particleSize / 2) {
+                    this.pos.x = width - particleSize / 2;
+                    this.vel.x *= -0.5;
+                }
+                if (this.pos.x < particleSize / 2) {
+                    this.pos.x = particleSize / 2;
+                    this.vel.x *= -0.5;
+                }
+            }
+
+            display() {
+                noStroke();
+                fill(0, 0, 255, 150);
+                ellipse(this.pos.x, this.pos.y, particleSize, particleSize);
+            }
+        }
+    </script>
+</body>
+</html>
