@@ -43,16 +43,26 @@
     <pre id="output"></pre>
 
     <script>
-        let fileSystem = {};
+        let fileSystem = JSON.parse(localStorage.getItem('complogiclang_files')) || {};
 
         function createFile() {
             const fileName = document.getElementById('file-name').value.trim();
             if (fileName && !fileSystem[fileName]) {
                 fileSystem[fileName] = '';
+                saveToLocalStorage();
                 updateFileList();
                 alert(`File ${fileName} created.`);
             } else {
                 alert('Invalid file name or file already exists.');
+            }
+        }
+
+        function deleteFile(fileName) {
+            if (confirm(`Are you sure you want to delete ${fileName}?`)) {
+                delete fileSystem[fileName];
+                saveToLocalStorage();
+                updateFileList();
+                alert(`File ${fileName} deleted.`);
             }
         }
 
@@ -65,23 +75,33 @@
                 const loadButton = document.createElement('button');
                 loadButton.textContent = 'Load';
                 loadButton.onclick = () => loadFile(fileName);
+                const deleteButton = document.createElement('button');
+                deleteButton.textContent = 'Delete';
+                deleteButton.onclick = () => deleteFile(fileName);
                 li.appendChild(loadButton);
+                li.appendChild(deleteButton);
                 fileList.appendChild(li);
             }
         }
 
         function loadFile(fileName) {
             document.getElementById('editor').value = fileSystem[fileName];
+            document.getElementById('file-name').value = fileName;
         }
 
         function saveFile() {
             const fileName = document.getElementById('file-name').value.trim();
             if (fileName && fileSystem[fileName] !== undefined) {
                 fileSystem[fileName] = document.getElementById('editor').value;
+                saveToLocalStorage();
                 alert(`File ${fileName} saved.`);
             } else {
                 alert('Invalid file name.');
             }
+        }
+
+        function saveToLocalStorage() {
+            localStorage.setItem('complogiclang_files', JSON.stringify(fileSystem));
         }
 
         function runCode() {
@@ -133,6 +153,16 @@
                         break;
                     case T_OUTNOT:
                         logic.OUTNOT();
+                        break;
+                    case T_IMPORT:
+                        const importFileName = token[1];
+                        if (fileSystem[importFileName]) {
+                            const importedCode = fileSystem[importFileName];
+                            const importedTokens = Lex(importedCode);
+                            tokens.splice(tokenpos, 0, ...importedTokens);
+                        } else {
+                            throw new Error('Import file not found: ' + importFileName);
+                        }
                         break;
                     default:
                         throw new Error('Unknown token: ' + token[0]);
@@ -237,6 +267,9 @@
                             case 'start':
                                 tokens.push([T_START]);
                                 break;
+                            case 'import':
+                                tokens.push([T_IMPORT]);
+                                break;
                             default:
                                 tokens.push([T_CUSTOM, token]);
                                 break;
@@ -269,6 +302,9 @@
         const T_IMPORT = 9;
         const T_START = 10;
         const T_CUSTOM = 11;
+
+        // Initialize file list on page load
+        window.onload = updateFileList;
     </script>
 </body>
 </html>
