@@ -40,6 +40,9 @@
     <script>
         let particles = [];
         let density, particleSize, viscosity, gravity;
+        let repelForce = 0.5;
+        let repelDistance = 50;
+        let isRepelling = false;
 
         function setup() {
             let canvas = createCanvas(800, 600);
@@ -54,6 +57,9 @@
             select('#particleSize').input(updateSettings);
             select('#viscosity').input(updateSettings);
             select('#gravity').input(updateSettings);
+
+            canvas.mousePressed(startRepelling);
+            canvas.mouseReleased(stopRepelling);
         }
 
         function draw() {
@@ -74,6 +80,16 @@
                 p.update();
                 p.display();
             }
+            if (isRepelling) {
+                for (let p of particles) {
+                    let d = dist(mouseX, mouseY, p.pos.x, p.pos.y);
+                    if (d <= repelDistance) {
+                        let force = p5.Vector.sub(p.pos, createVector(mouseX, mouseY));
+                        force.setMag(repelForce);
+                        p.applyForce(force);
+                    }
+                }
+            }
         }
 
         function updateSettings() {
@@ -85,6 +101,16 @@
 
         function mouseDragged() {
             particles.push(new Particle(mouseX, mouseY));
+        }
+
+        function startRepelling() {
+            if (mouseButton === RIGHT) {
+                isRepelling = true;
+            }
+        }
+
+        function stopRepelling() {
+            isRepelling = false;
         }
 
         class Particle {
