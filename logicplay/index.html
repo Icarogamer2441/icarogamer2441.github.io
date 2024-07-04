@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Complogiclanaaag Playground</title>
+    <title>Complogiclang Playground</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -117,9 +117,8 @@
             }
         }
 
-        // Complogiclang interpreter code (simplified for this example)
         function interpret(code) {
-            let logic = new Logical();
+            const logic = new Logical();
             let tokens = Lex(code);
             let tokenpos = 0;
             let output = '';
@@ -154,14 +153,13 @@
                     case T_OUTNOT:
                         logic.OUTNOT();
                         break;
-                    case T_IMPORT:
-                        const importFileName = token[1];
-                        if (fileSystem[importFileName]) {
-                            const importedCode = fileSystem[importFileName];
+                    case T_STRING:
+                        if (fileSystem[token[1]]) {
+                            const importedCode = fileSystem[token[1]];
                             const importedTokens = Lex(importedCode);
                             tokens.splice(tokenpos, 0, ...importedTokens);
                         } else {
-                            throw new Error('Import file not found: ' + importFileName);
+                            throw new Error('File not found: ' + token[1]);
                         }
                         break;
                     default:
@@ -231,13 +229,9 @@
 
             for (let token of splitted) {
                 if (!in_str) {
-                    if (token.startsWith('"')) {
-                        if (token.endsWith('"')) {
-                            tokens.push([T_STRING, token.slice(1, -1)]);
-                        } else {
-                            in_str = true;
-                            finalstr.push(token.slice(1));
-                        }
+                    if (token.includes(':')) {
+                        let parts = token.split(':');
+                        tokens.push([T_STRING, parts[1].trim().replace(/\"/g, '')]);
                     } else {
                         switch (token) {
                             case 'and':
@@ -266,9 +260,6 @@
                                 break;
                             case 'start':
                                 tokens.push([T_START]);
-                                break;
-                            case 'import':
-                                tokens.push([T_IMPORT]);
                                 break;
                             default:
                                 tokens.push([T_CUSTOM, token]);
@@ -299,9 +290,8 @@
         const T_BINDIGIT = 6;
         const T_PRTRTN = 7;
         const T_OUTNOT = 8;
-        const T_IMPORT = 9;
-        const T_START = 10;
-        const T_CUSTOM = 11;
+        const T_START = 9;
+        const T_CUSTOM = 10;
 
         // Initialize file list on page load
         window.onload = updateFileList;
