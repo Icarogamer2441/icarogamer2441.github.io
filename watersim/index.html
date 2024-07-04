@@ -112,12 +112,13 @@
         function keyPressed() {
             if (key === 'r' || key === 'R') {
                 let mousePos = createVector(mouseX, mouseY);
+                let repelRadius = 100; // Raio de repulsão definido
                 for (let i = 0; i < particles.length; i++) {
                     let p = particles[i];
                     let d = dist(p.pos.x, p.pos.y, mousePos.x, mousePos.y);
-                    if (d >= 50 && d <= 70) {
+                    if (d <= repelRadius) {
                         let force = p5.Vector.sub(p.pos, mousePos);
-                        force.setMag(map(d, 50, 70, 30, 0)); // Aumento da força de repulsão para 30
+                        force.setMag(map(d, 0, repelRadius, 30, 0)); // Aumento da força de repulsão para 30
                         p.applyForce(force);
                     }
                 }
