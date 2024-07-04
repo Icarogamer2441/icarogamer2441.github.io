@@ -61,21 +61,22 @@
 
         function draw() {
             background(255);
-            particles.forEach(p => {
+            for (let i = 0; i < particles.length; i++) {
+                let p = particles[i];
                 p.applyForce(createVector(0, gravity));
-                particles.forEach(other => {
-                    if (p !== other) {
-                        let d = dist(p.pos.x, p.pos.y, other.pos.x, other.pos.y);
-                        if (d < density) {
-                            let force = p5.Vector.sub(p.pos, other.pos);
-                            force.setMag((density - d) * 0.05);
-                            p.applyForce(force);
-                        }
+                for (let j = i + 1; j < particles.length; j++) {
+                    let other = particles[j];
+                    let d = dist(p.pos.x, p.pos.y, other.pos.x, other.pos.y);
+                    if (d < density) {
+                        let force = p5.Vector.sub(p.pos, other.pos);
+                        force.setMag((density - d) * 0.1);
+                        p.applyForce(force);
+                        other.applyForce(force.mult(-1));
                     }
-                });
+                }
                 p.update();
                 p.display();
-            });
+            }
         }
 
         function updateSettings() {
