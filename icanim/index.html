@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Python Animation Playground</title>
+    <title>ICANIM Playground</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -12,14 +12,16 @@
             align-items: center;
             height: 100vh;
             background-color: #f0f0f0;
+            margin: 0;
         }
 
         #playground {
             text-align: center;
+            width: 80%;
         }
 
         .frame-input {
-            width: 100%;
+            width: calc(100% - 50px);
             height: 100px;
             margin-bottom: 10px;
         }
@@ -36,6 +38,12 @@
         }
 
         #add-frame {
+            margin-bottom: 10px;
+        }
+
+        #frames-container {
+            max-height: 300px; /* Set the max height here */
+            overflow-y: auto;
             margin-bottom: 10px;
         }
 
@@ -57,16 +65,17 @@
 </head>
 <body>
     <div id="playground">
+        <h1>ICANIM Playground</h1>
         <div id="frames-container">
             <div class="frame-container">
-                <textarea class="frame-input" placeholder="Digite o conteúdo do frame aqui..."></textarea>
+                <textarea class="frame-input" placeholder="Enter frame content here..."></textarea>
                 <button class="delete-frame">X</button>
             </div>
         </div>
-        <button id="add-frame">Adicionar Frame</button>
+        <button id="add-frame">Add Frame</button>
         <br>
         <input type="number" id="fps-input" placeholder="FPS" value="12">
-        <button id="start-animation">Iniciar Animação</button>
+        <button id="start-animation">Start Animation</button>
         <pre id="animation-output"></pre>
     </div>
     <script>
@@ -77,7 +86,7 @@
 
             const newFrame = document.createElement('textarea');
             newFrame.className = 'frame-input';
-            newFrame.placeholder = 'Digite o conteúdo do frame aqui...';
+            newFrame.placeholder = 'Enter frame content here...';
 
             const deleteButton = document.createElement('button');
             deleteButton.className = 'delete-frame';
