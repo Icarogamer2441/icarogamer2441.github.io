@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Animation Playground</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+
+        #playground {
+            text-align: center;
+        }
+
+        .frame-input {
+            width: 100%;
+            height: 100px;
+            margin-bottom: 10px;
+        }
+
+        .frame-container {
+            position: relative;
+            margin-bottom: 10px;
+        }
+
+        .delete-frame {
+            position: absolute;
+            right: 0;
+            top: 0;
+        }
+
+        #add-frame {
+            margin-bottom: 10px;
+        }
+
+        #fps-input {
+            width: 50px;
+            margin-right: 10px;
+        }
+
+        #animation-output {
+            white-space: pre;
+            background-color: #fff;
+            padding: 10px;
+            border: 1px solid #ccc;
+            height: 200px;
+            overflow-y: auto;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="playground">
+        <div id="frames-container">
+            <div class="frame-container">
+                <textarea class="frame-input" placeholder="Digite o conteúdo do frame aqui..."></textarea>
+                <button class="delete-frame">X</button>
+            </div>
+        </div>
+        <button id="add-frame">Adicionar Frame</button>
+        <br>
+        <input type="number" id="fps-input" placeholder="FPS" value="12">
+        <button id="start-animation">Iniciar Animação</button>
+        <pre id="animation-output"></pre>
+    </div>
+    <script>
+        document.getElementById('add-frame').addEventListener('click', function() {
+            const framesContainer = document.getElementById('frames-container');
+            const frameContainer = document.createElement('div');
+            frameContainer.className = 'frame-container';
+
+            const newFrame = document.createElement('textarea');
+            newFrame.className = 'frame-input';
+            newFrame.placeholder = 'Digite o conteúdo do frame aqui...';
+
+            const deleteButton = document.createElement('button');
+            deleteButton.className = 'delete-frame';
+            deleteButton.textContent = 'X';
+            deleteButton.addEventListener('click', function() {
+                framesContainer.removeChild(frameContainer);
+            });
+
+            frameContainer.appendChild(newFrame);
+            frameContainer.appendChild(deleteButton);
+            framesContainer.appendChild(frameContainer);
+        });
+
+        document.getElementById('start-animation').addEventListener('click', function() {
+            const frames = Array.from(document.getElementsByClassName('frame-input')).map(textarea => textarea.value);
+            const fps = parseInt(document.getElementById('fps-input').value);
+            const output = document.getElementById('animation-output');
+            let currentFrame = 0;
+
+            function clearScreen() {
+                output.textContent = '';
+            }
+
+            function showFrame() {
+                if (currentFrame < frames.length) {
+                    clearScreen();
+                    output.textContent = frames[currentFrame];
+                    currentFrame++;
+                    setTimeout(showFrame, 1000 / fps);
+                } else {
+                    currentFrame = 0;
+                }
+            }
+
+            showFrame();
+        });
+    </script>
+</body>
+</html>
