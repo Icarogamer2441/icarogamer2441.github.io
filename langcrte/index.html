@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tradutor de Idioma Personalizado</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            padding: 20px;
+            max-width: 900px;
+            margin: auto;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1, h2 {
+            color: #0056b3;
+        }
+        label {
+            font-weight: bold;
+        }
+        input, button, textarea {
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #0056b3;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #004494;
+        }
+        textarea {
+            resize: vertical;
+        }
+        .section {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+        .translation-list {
+            margin-top: 10px;
+        }
+        .translation-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+            border-bottom: 1px solid #ddd;
+        }
+        .translation-item button {
+            background-color: #ff4d4d;
+            border: none;
+            color: white;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+        .translation-item button:hover {
+            background-color: #cc0000;
+        }
+    </style>
+</head>
+<body>
+    <h1>Tradutor de Idioma Personalizado</h1>
+
+    <div class="section">
+        <h2>Crie seu próprio idioma</h2>
+        <label for="normalPhrase">Idioma normal:</label>
+        <input type="text" id="normalPhrase" placeholder="Ex: tudo bem">
+        <br>
+        <label for="newPhrase">Novo idioma:</label>
+        <input type="text" id="newPhrase" placeholder="Ex: tuieb">
+        <br>
+        <button onclick="addTranslation()">Adicionar Tradução</button>
+    </div>
+
+    <div class="section">
+        <h2>Traduzir Texto</h2>
+        <label for="textToTranslate">Texto para traduzir:</label>
+        <input type="text" id="textToTranslate" placeholder="Ex: oi, tudo bem?">
+        <br>
+        <label for="direction">Direção da Tradução:</label>
+        <select id="direction">
+            <option value="normalToNew">Idioma Normal → Novo Idioma</option>
+            <option value="newToNormal">Novo Idioma → Idioma Normal</option>
+        </select>
+        <br>
+        <button onclick="translateText()">Traduzir</button>
+        <p id="translationResult"></p>
+    </div>
+
+    <div class="section">
+        <h2>Lista de Traduções</h2>
+        <div id="translationList" class="translation-list">
+            <!-- Lista de traduções será exibida aqui -->
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Salvar Traduções</h2>
+        <label for="fileName">Nome do arquivo JSON:</label>
+        <input type="text" id="fileName" placeholder="Ex: novo_idioma">
+        <br>
+        <button onclick="saveTranslations()">Salvar Traduções</button>
+    </div>
+
+    <div class="section">
+        <h2>Importar Traduções</h2>
+        <input type="file" id="importFile" accept=".json">
+        <br>
+        <button onclick="importTranslations()">Importar Traduções</button>
+    </div>
+
+    <script>
+        const translations = {};
+        const reverseTranslations = {};
+
+        function cleanText(text) {
+            return text.replace(/[^\w\s]/g, '').toLowerCase();
+        }
+
+        function updateTranslationList() {
+            const listElement = document.getElementById('translationList');
+            listElement.innerHTML = ''; // Limpa a lista existente
+
+            Object.keys(translations).forEach(normalPhrase => {
+                const newPhrase = translations[normalPhrase];
+                const item = document.createElement('div');
+                item.className = 'translation-item';
+                item.innerHTML = `
+                    <span>${normalPhrase} → ${newPhrase}</span>
+                    <button onclick="removeTranslation('${normalPhrase}')">Remover</button>
+                `;
+                listElement.appendChild(item);
+            });
+        }
+
+        function addTranslation() {
+            const normalPhrase = cleanText(document.getElementById('normalPhrase').value.trim());
+            const newPhrase = cleanText(document.getElementById('newPhrase').value.trim());
+
+            if (normalPhrase && newPhrase) {
+                translations[normalPhrase] = newPhrase;
+                reverseTranslations[newPhrase] = normalPhrase;
+                document.getElementById('normalPhrase').value = '';
+                document.getElementById('newPhrase').value = '';
+                updateTranslationList();
+                alert('Tradução adicionada com sucesso!');
+            } else {
+                alert('Por favor, preencha ambos os campos.');
+            }
+        }
+
+        function removeTranslation(phraseToRemove) {
+            delete translations[phraseToRemove];
+            // Remove a tradução inversa associada
+            const newPhrase = reverseTranslations[phraseToRemove];
+            delete reverseTranslations[newPhrase];
+            updateTranslationList();
+        }
+
+        function translateText() {
+            const input = document.getElementById('textToTranslate').value.trim();
+            const direction = document.getElementById('direction').value;
+
+            let result = input;
+
+            // Tradução direta de frases
+            for (const [normalPhrase, newPhrase] of Object.entries(translations)) {
+                if (direction === 'normalToNew') {
+                    const regex = new RegExp('\\b' + normalPhrase.replace(/\s+/g, '\\s+') + '\\b', 'gi');
+                    result = result.replace(regex, newPhrase);
+                } else if (direction === 'newToNormal') {
+                    const regex = new RegExp('\\b' + newPhrase + '\\b', 'gi');
+                    result = result.replace(regex, reverseTranslations[newPhrase]);
+                }
+            }
+
+            // Mantém espaços e símbolos
+            result = result.replace(/([^\w\s])/g, ' $1 ');
+
+            document.getElementById('translationResult').innerText = result.trim();
+        }
+
+        function saveTranslations() {
+            const fileName = document.getElementById('fileName').value.trim();
+            if (fileName) {
+                const blob = new Blob([JSON.stringify(translations, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `${fileName}.json`;
+                a.click();
+                URL.revokeObjectURL(url);
+            } else {
+                alert('Por favor, insira um nome para o arquivo.');
+            }
+        }
+
+        function importTranslations() {
+            const fileInput = document.getElementById('importFile');
+            const file = fileInput.files[0];
+
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    try {
+                        const importedTranslations = JSON.parse(event.target.result);
+                        Object.assign(translations, importedTranslations);
+                        Object.keys(importedTranslations).forEach(key => {
+                            reverseTranslations[importedTranslations[key]] = key;
+                        });
+                        updateTranslationList();
+                        alert('Traduções importadas com sucesso!');
+                    } catch (e) {
+                        alert('Erro ao importar o arquivo. Verifique o formato do JSON.');
+                    }
+                };
+                reader.readAsText(file);
+            } else {
+                alert('Por favor, selecione um arquivo para importar.');
+            }
+        }
+
+        // Inicializa a lista de traduções ao carregar a página
+        updateTranslationList();
+    </script>
+</body>
+</html>
