@@ -1,33 +1,220 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>site oficial do icaro</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gamu - AI Powered Website Creation</title>
+  <link href="https://unpkg.com/tailwindcss@^2.0/dist/tailwind.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/alpinejs@2.8.2/dist/alpine.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/ScrollTrigger.min.js"></script>
+  <style>
+      body {
+          font-family: 'Roboto', sans-serif;
+          background-color: #1a202c;
+          color: #e2e8f0;
+          transition: background-color 0.3s ease, color 0.3s ease;
+          scroll-behavior: smooth;
+      }
+      
+      .glass {
+          background: rgba(255, 255, 255, 0.1);
+          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+          backdrop-filter: blur(10px);
+          border-radius: 0.5rem;
+          border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      
+      .neumorphic {
+          background: #1a202c;
+          box-shadow: 5px 5px 10px #12161d, -5px -5px 10px #222a3b;
+          border-radius: 0.5rem;
+      }
+
+      .neumorphic:hover{
+          box-shadow: 3px 3px 6px #12161d, -3px -3px 6px #222a3b;
+      }
+      
+      .text-gradient {
+          background: linear-gradient(45deg, #4a90e2, #63e2b1);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          display: inline-block;
+      }
+      
+      .parallax {
+          background-attachment: fixed;
+          background-size: cover;
+          background-position: center;
+      }
+      
+      .parallax-element {
+          transition: transform 0.3s ease;
+      }
+
+      .gradient-bg{
+          background: linear-gradient(45deg, #2a4365, #2f858c)
+      }
+
+      .transition-fast{
+        transition: all 0.15s ease-in-out;
+      }
+      .icon-pulse {
+        animation: pulse 2s infinite;
+    }
+      @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.1); }
+        100% { transform: scale(1); }
+      }
+      
+      header.fixed {
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          z-index: 100;
+      }
+  </style>
 </head>
-<body>
-    <h1>para entrar no tutorial de aprender a minha linguagem chamada aloha você pode usar a url: icarogamer2441.github.io/aloha/</h1>
-    <h1>para entrar no chatbot feito pelo chatgpt que você mesmo ensina esse chatbot, basta usar a url: icarogamer2441.github.io/chatbot/</h1>
-    <h1>para entrar na lista de usuarios que você pode usar para adicionar e remover usuarios (ficarão salvos apenas para você) você pode usar a url: icarogamer2441.github.io/userlist/</h1>
-    <h1>para entrar no editoso (editor de texto simploso) você pode usar a url: icarogamer2441.github.io/editoso/</h1>
-    <h1>para entrar no esobinplay (playground do esobinlang) você pode usar usar a url: icarogamer2441.github.io/esobinplay/</h1>
-    <h1>para entrar no helloplay (playground do hellolang) você pode usar a url: icarogamer2441.github.io/helloplay/</h1>
-    <h1>para entrar no memprpay (playground do memprint) você pode usar url: icarogamer2441.github.io/memprplay/</h1>
-    <h1>para entrar no hardlangplay (plaground do hardlang) você pode usar a url: icarogamer2441.github.io/hardlang/</h1>
-    <h1>para entrar na documentação do memprintlang, você pode usar a url: icarogamer2441.github.io/memprdocs/</h1>
-    <h1>para entrar no celllangplay (playground do celllang) você pode usar a url: icarogamer2441.github.io/celllangplay/</h1>
-    <h1>para entrar no simulador de vida (não é meu, eu peguei de um tutorial do youtube de como fazer um simulador de vida) você pode usar a url: icarogamer2441.github.io/life-notbyme/</h1>
-    <h1>para entrar no Random Search (um site de pesquisas aleatorias que eu fiz) você pode usar a url: icarogamer2441.github.io/randomsearch/</h1>
-    <h1>para entrar no icatetris (um tetris feito pelo chatgpt, que eu pedi) você pode usar a url: icarogamer2441.github.io/icatetris/</h1>
-    <h1>para entrar no playground da minha esolang chamada interpreted executable você pode usar a url: icarogamer2441.github.io/intexecplay/</h1>
-    <h1>para entrar no webuniverse você pode usar a url: icarogamer2441.github.io/webuniverse/</h1>
-    <h1>para entrar no file system simulator você pode usar a url: icarogamer2441.github.io/filesim/</h1>
-    <h1>para entrar no docs creator você pode usar a url: icarogamer2441.github.io/docscreator/</h1>
-    <h1>para entrar no langscode você pode usar a url: icarogamer2441.github.io/langscode/</h1>
-    <h1>para entrar no computer logic simulator lang você pode usar a url: icarogamer2441.github.io/logicplay/</h1>
-    <h1>para entrar no water simulator você pode usar a url: icarogamer2441.github.io/watersim/</h1>
-    <h1>para entrar no icanimation playground você pode usar a url: icarogamer2441.github.io/icanim/</h1>
-    <h1>para entrar no language creator você pode usar a url: icarogamer2441.github.io/langcrte/</h1>
+<body class="bg-gray-900 text-gray-100">
+    <header class="py-4 glass fixed">
+        <div class="container mx-auto flex justify-between items-center px-4">
+            <a href="#" class="text-xl font-bold text-gradient">Gamu 🤖</a>
+            <nav class="space-x-4">
+                <a href="#features" class="hover:text-gray-300 transition-colors">Features</a>
+                <a href="#pricing" class="hover:text-gray-300 transition-colors">Pricing</a>
+                 <a href="#models" class="hover:text-gray-300 transition-colors">Models</a>
+            </nav>
+        </div>
+    </header>
+
+  <section class="parallax relative h-screen gradient-bg" data-speed="0.5">
+    <div class="absolute inset-0 flex items-center justify-center">
+      <div class="text-center z-10">
+        <h1 class="text-5xl font-bold mb-4 text-gradient">Unleash Your Vision</h1>
+        <p class="text-lg mb-8 text-gray-300">Create stunning websites with the power of AI.</p>
+        <a href="https://gamu.vercel.app" target="_blank" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-md neumorphic transition-fast">Get Started</a>
+      </div>
+    </div>
+    <div class="absolute inset-0 opacity-40 bg-cover bg-center"
+         style="background-image: url('https://i.ibb.co/pX0hNBr/Captura-de-imagem-20241228-170211.png');">
+    </div>
+  </section>
+
+  <section id="features" class="py-16">
+    <div class="container mx-auto px-4">
+      <h2 class="text-3xl font-bold text-center mb-8 text-gradient">Key Features</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="p-6 glass text-center transform hover:scale-105 transition-transform">
+          <div class="text-4xl mb-4 icon-pulse">✨</div>
+          <h3 class="text-xl font-bold mb-2">AI-Powered Design</h3>
+          <p class="text-gray-300">Use Gemini, 1.5 Flash, 1.5 Pro, and 2.0 Flash to generate custom website layouts.</p>
+        </div>
+        <div class="p-6 glass text-center transform hover:scale-105 transition-transform">
+          <div class="text-4xl mb-4 icon-pulse">🎨</div>
+          <h3 class="text-xl font-bold mb-2">Beautiful Websites</h3>
+          <p class="text-gray-300">Our AI strives to create visually appealing websites.</p>
+        </div>
+        <div class="p-6 glass text-center transform hover:scale-105 transition-transform">
+          <div class="text-4xl mb-4 icon-pulse">⚙️</div>
+          <h3 class="text-xl font-bold mb-2">User-Focused Creation</h3>
+           <p class="text-gray-300">The AI always tries to build what the user asks for.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="pricing" class="py-16 bg-gray-800">
+      <div class="container mx-auto px-4">
+          <h2 class="text-3xl font-bold text-center mb-8 text-gradient">Pricing</h2>
+            <div class="p-6 glass text-center transform hover:scale-105 transition-transform mx-auto max-w-md">
+                  <h3 class="text-2xl font-bold mb-4">Free</h3>
+                  <p class="text-4xl font-bold mb-4 text-gradient">Totally Free</p>
+                  <ul class="mb-6 space-y-2 text-gray-300">
+                      <li>All features included</li>
+                      <li>No payment required</li>
+                      <li>Unlimited usage</li>
+                  </ul>
+                  <a href="https://gamu.vercel.app" target="_blank" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md neumorphic transition-fast">Get Started</a>
+            </div>
+      </div>
+  </section>
+    
+    <section id="models" class="py-16">
+    <div class="container mx-auto px-4">
+      <h2 class="text-3xl font-bold text-center mb-8 text-gradient">AI Models</h2>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="p-6 glass text-center transform hover:scale-105 transition-transform">
+                <h3 class="text-xl font-bold mb-2 text-gradient">Gemini 1.5 Flash</h3>
+              <p class="text-gray-300">Fast, efficient, and great for quick iterations.</p>
+            </div>
+              <div class="p-6 glass text-center transform hover:scale-105 transition-transform">
+                <h3 class="text-xl font-bold mb-2 text-gradient">Gemini 1.5 Pro</h3>
+                  <p class="text-gray-300">Balance of speed and quality for most use cases.</p>
+              </div>
+               <div class="p-6 glass text-center transform hover:scale-105 transition-transform">
+                <h3 class="text-xl font-bold mb-2 text-gradient">Gemini 2.0 Flash</h3>
+                 <p class="text-gray-300">The next generation AI, offering even more speed and efficiency.</p>
+              </div>
+          </div>
+    </div>
+  </section>
+  
+    <footer class="py-8 bg-gray-800">
+        <div class="container mx-auto px-4 flex flex-col md:flex-row justify-between items-center">
+            <p class="text-gray-400 mb-4 md:mb-0">
+                Created by <span class="text-blue-400">Jose Icaro</span> using <a href="https://ai.google.dev/" target="_blank" class="text-blue-400 hover:text-blue-300 transition-colors">Google Gemini API</a>
+            </p>
+             <a href="https://github.com/Icarogamer2441/gamu" target="_blank" class="text-gray-400 hover:text-gray-300 transition-colors">
+               © 2024 Gamu | GitHub
+           </a>
+        </div>
+    </footer>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    
+      function parallaxEffect() {
+        const parallaxElements = document.querySelectorAll('.parallax');
+
+        parallaxElements.forEach(element => {
+            const speed = parseFloat(element.getAttribute('data-speed') || 0.5);
+            const offset = element.offsetTop;
+
+            function updateParallax() {
+              const scrollPosition = window.scrollY;
+                const yPos = (scrollPosition - offset) * speed;
+                element.style.transform = `translateY(${yPos}px)`;
+            }
+
+            window.addEventListener('scroll', updateParallax);
+            updateParallax()
+        });
+      }
+
+    function handleScrollAnimations() {
+          const sections = document.querySelectorAll('section');
+            sections.forEach(section => {
+              gsap.from(section, {
+                  opacity: 0,
+                  y: 50,
+                  duration: 1,
+                  scrollTrigger: {
+                      trigger: section,
+                      start: "top 80%",
+                      end: "bottom 20%",
+                      toggleActions: "play none none reverse",
+                      once: true
+                  }
+              });
+            });
+        }
+
+      parallaxEffect();
+      handleScrollAnimations();
+});
+</script>
 </body>
 </html>
