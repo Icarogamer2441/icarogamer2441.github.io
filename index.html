@@ -75,10 +75,14 @@
           right: 0;
           z-index: 100;
       }
+
+    .header-gradient {
+            background: linear-gradient(to right, #1a202c, #2d3748);
+        }
   </style>
 </head>
 <body class="bg-gray-900 text-gray-100">
-    <header class="py-4 glass fixed">
+    <header class="py-4 glass fixed header-gradient">
         <div class="container mx-auto flex justify-between items-center px-4">
             <a href="#" class="text-xl font-bold text-gradient">Gamu 🤖</a>
             <nav class="space-x-4">
@@ -211,9 +215,25 @@ document.addEventListener('DOMContentLoaded', () => {
               });
             });
         }
+    function applyHeaderShadowOnScroll() {
+            const header = document.querySelector('header');
+            
+              function updateHeaderShadow() {
+                if (window.scrollY > 50) {
+                    header.classList.add('shadow-md');
+                } else {
+                  header.classList.remove('shadow-md');
+                  }
+                }
+
+                window.addEventListener('scroll', updateHeaderShadow);
+                updateHeaderShadow();
+          }
+
 
       parallaxEffect();
       handleScrollAnimations();
+      applyHeaderShadowOnScroll();
 });
 </script>
 </body>
