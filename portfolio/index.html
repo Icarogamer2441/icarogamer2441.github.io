@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>José Ícaro - Portfolio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/2.3.0/alpine.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/ScrollTrigger.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #1a202c;
+            color: #cbd5e0;
+            overflow-x: hidden;
+        }
+
+        .glassmorphism {
+            background: rgba(255, 255, 255, 0.05);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .neumorphism {
+            background: #1a202c;
+            box-shadow:  5px 5px 10px #151922,
+                         -5px -5px 10px #1f2736;
+        }
+
+        .neumorphism-inset {
+            background: #1a202c;
+            box-shadow: inset 5px 5px 10px #151922,
+                         inset -5px -5px 10px #1f2736;
+        }
+
+
+        .gradient-header {
+            background: linear-gradient(to right, #4A00E0, #8E2DE2);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .gradient-button {
+            background: linear-gradient(45deg, #4A00E0, #8E2DE2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .gradient-button:hover {
+            transform: scale(1.05);
+             box-shadow: 0 4px 15px rgba(142, 45, 226, 0.5);
+        }
+
+        .parallax-bg {
+              background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23344052' fill-opacity='0.45' fill-rule='evenodd'%3E%3Cpath d='M0 40L40 0H20L0 20zM0 0h20v20H0z'/%3E%3C/g%3E%3C/svg%3E");
+              background-attachment: fixed;
+              opacity:0.8;
+          }
+       .custom-shadow {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2), 0 6px 20px rgba(0, 0, 0, 0.19);
+        }
+
+
+    </style>
+</head>
+<body class="overflow-x-hidden">
+    <div class="parallax-bg absolute inset-0 -z-10"></div>
+    <header class="py-6 px-4  glassmorphism  sticky top-0 z-50 ">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-2xl font-bold gradient-header">José Ícaro</h1>
+            <nav>
+                 <ul class="flex space-x-6">
+                    <li><a href="#about" class="hover:text-purple-400 transition duration-300">About</a></li>
+                    <li><a href="#projects" class="hover:text-purple-400 transition duration-300">Projects</a></li>
+                    <li><a href="#contact" class="hover:text-purple-400 transition duration-300">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+
+    <main class="mt-12 px-4">
+        <section id="hero" class="relative py-20  flex items-center min-h-screen overflow-hidden">
+            <div class="container mx-auto text-center relative z-10">
+               <h2 class="text-4xl font-bold mb-4 animate-fade-in" style="opacity: 0;">
+                    Hello, I'm <span class="gradient-header">José Ícaro</span>
+                </h2>
+                <p class="text-lg mb-8  animate-fade-in" style="opacity: 0; transform: translateY(20px);">
+                    I'm a passionate developer with a focus on Python, Next.js, Tailwind CSS, and React.js
+                </p>
+                <a href="#projects" class="inline-block gradient-button text-white font-bold py-3 px-6 rounded-md hover:shadow-lg transition duration-300 animate-button" style="opacity:0; transform: translateY(20px);">
+                    View My Work ⇾
+                </a>
+            </div>
+              <div class="absolute inset-0 overflow-hidden pointer-events-none">
+                    <div  class="absolute w-64 h-64  bg-purple-500 rounded-full blur-2xl -left-32 -top-16 animate-pulse-circle" style="opacity: 0.3; "></div>
+                    <div  class="absolute w-64 h-64 bg-blue-500 rounded-full blur-2xl -bottom-16 -right-32 animate-pulse-circle"  style="opacity: 0.3;"></div>
+                </div>
+        </section>
+
+
+
+        <section id="about" class="py-16  relative overflow-hidden ">
+            <div class="container mx-auto  relative z-10">
+                <h2 class="text-3xl font-bold mb-8 text-center gradient-header">About Me</h2>
+               <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center  ">
+
+                   <div class="relative p-6 rounded-lg neumorphism  custom-shadow overflow-hidden" x-data="{isHovered: false}" @mouseenter="isHovered = true" @mouseleave="isHovered = false">
+                         <div class="absolute inset-0 -z-10">
+                             <div x-show="!isHovered" class="absolute inset-0   bg-gradient-to-br from-purple-800 to-blue-800 opacity-20  transition duration-300 blur-lg"></div>
+                            <div x-show="isHovered" class="absolute inset-0 bg-gradient-to-br from-purple-800 to-blue-800 opacity-40  transition duration-300 blur-lg"></div>
+                         </div>
+
+                        <p class="text-lg leading-relaxed">
+                            Hi, I'm José Ícaro, a passionate developer focused on creating efficient and user-friendly web experiences.
+                            My journey in the world of web development has been an exciting one, starting with Python and now venturing into the realm of modern web technologies like Next.js and React.js.
+                        </p>
+                        <p class="text-lg leading-relaxed mt-4">
+                            I love to experiment and push boundaries, often using AI tools like the one I developed, <span class="font-semibold">Gamu</span>, to enhance my projects. Gamu helps me and others create websites faster and easier using AI.
+                        </p>
+
+                        <div class="mt-6">
+                             <h3 class="text-xl font-bold mb-2">Skills</h3>
+                               <ul class="grid grid-cols-2 md:grid-cols-3 gap-2 ">
+                                  <li class="text-gray-300 flex items-center"><span class="mr-2">🚀</span> Python</li>
+                                  <li class="text-gray-300 flex items-center"><span class="mr-2">⚛️</span>  Next.js</li>
+                                 <li class="text-gray-300 flex items-center"><span class="mr-2">🎨</span>  Tailwind CSS</li>
+                                   <li class="text-gray-300 flex items-center"><span class="mr-2">✨</span> React.js</li>
+                                     <li class="text-gray-300 flex items-center"><span class="mr-2">🧠</span>  AI Development</li>
+                               </ul>
+                        </div>
+                    </div>
+
+                 <div class="relative p-6 rounded-lg  custom-shadow overflow-hidden">
+                    <div class="absolute inset-0 -z-10  bg-gradient-to-br from-purple-800 to-blue-800 opacity-20 blur-lg "></div>
+                      <div class="flex items-center justify-center ">
+                         <div class="rounded-full overflow-hidden border-4 border-purple-500 shadow-lg relative w-64 h-64">
+                             <div class="absolute inset-0 bg-purple-800 opacity-60  blur-sm"></div>
+                            <svg class="absolute inset-0 w-full h-full" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                                  <defs>
+                                    <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+                                      <stop offset="0%" style="stop-color:#8E2DE2;stop-opacity:1" />
+                                      <stop offset="100%" style="stop-color:#4A00E0;stop-opacity:1" />
+                                    </linearGradient>
+                                  </defs>
+                                <circle cx="50" cy="50" r="45" fill="url(#grad1)"/>
+                              <text x="50%" y="50%" text-anchor="middle" dominant-baseline="middle" font-size="20" fill="#ffffff">🧐</text>
+
+                            </svg>
+                             <svg class="absolute inset-0 w-full h-full animate-spin" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                                  <circle cx="50" cy="50" r="45" fill="none" stroke="#f3f3f3" stroke-width="2" stroke-dasharray="20,10" />
+                               </svg>
+
+                            </div>
+                       </div>
+                    </div>
+                </div>
+            </div>
+              <div class="absolute inset-0 overflow-hidden pointer-events-none">
+                    <div  class="absolute w-64 h-64  bg-purple-500 rounded-full blur-2xl -left-32 bottom-20 animate-pulse-circle" style="opacity: 0.3; "></div>
+                    <div  class="absolute w-64 h-64 bg-blue-500 rounded-full blur-2xl -top-16 right-48 animate-pulse-circle"  style="opacity: 0.3;"></div>
+                </div>
+        </section>
+
+        <section id="projects" class="py-16  relative overflow-hidden ">
+              <div class="container mx-auto relative z-10">
+                  <h2 class="text-3xl font-bold mb-8 text-center gradient-header">My Projects</h2>
+
+                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="p-6 rounded-lg  neumorphism  custom-shadow" x-data="{isHovered: false}" @mouseenter="isHovered = true" @mouseleave="isHovered = false">
+                       <div class="relative overflow-hidden">
+                           <div class="absolute inset-0 -z-10">
+                                <div x-show="!isHovered" class="absolute inset-0 bg-gradient-to-br from-purple-800 to-blue-800 opacity-20  transition duration-300 blur-lg"></div>
+                               <div x-show="isHovered" class="absolute inset-0 bg-gradient-to-br from-purple-800 to-blue-800 opacity-40 transition duration-300 blur-lg"></div>
+                           </div>
+                            <h3 class="text-xl font-semibold mb-2">Gamu - AI Website Builder</h3>
+                            <p class="text-gray-300 mb-4">
+                               Gamu is a project I'm very proud of, it's an AI-powered website builder that makes creating websites easier for anyone using AI.
+                            </p>
+                            <a href="https://gamu.vercel.app" target="_blank" class="inline-block gradient-button text-white font-bold py-2 px-4 rounded-md hover:shadow-lg transition duration-300">
+                                 Learn More
+                            </a>
+                       </div>
+                    </div>
+
+
+                      <div class="p-6 rounded-lg  neumorphism  custom-shadow" x-data="{isHovered: false}" @mouseenter="isHovered = true" @mouseleave="isHovered = false">
+                       <div class="relative overflow-hidden">
+                           <div class="absolute inset-0 -z-10">
+                                <div x-show="!isHovered" class="absolute inset-0 bg-gradient-to-br from-purple-800 to-blue-800 opacity-20  transition duration-300 blur-lg"></div>
+                               <div x-show="isHovered" class="absolute inset-0 bg-gradient-to-br from-purple-800 to-blue-800 opacity-40 transition duration-300 blur-lg"></div>
+                           </div>
+                           <h3 class="text-xl font-semibold mb-2">Personal Portfolio Website</h3>
+                            <p class="text-gray-300 mb-4">
+                               This very portfolio you're exploring was also built using Gamu, demonstrating its capabilities in creating a user-friendly and visually appealing websites.
+                            </p>
+                            <a href="#" class="inline-block gradient-button text-white font-bold py-2 px-4 rounded-md hover:shadow-lg transition duration-300">
+                                 Learn More
+                            </a>
+                       </div>
+                    </div>
+
+                 </div>
+
+              </div>
+                  <div class="absolute inset-0 overflow-hidden pointer-events-none">
+                    <div  class="absolute w-64 h-64  bg-purple-500 rounded-full blur-2xl -left-24 bottom-20 animate-pulse-circle" style="opacity: 0.3; "></div>
+                    <div  class="absolute w-64 h-64 bg-blue-500 rounded-full blur-2xl -top-16 right-24 animate-pulse-circle"  style="opacity: 0.3;"></div>
+                </div>
+        </section>
+
+        <section id="contact" class="py-16 relative  overflow-hidden">
+            <div class="container mx-auto  relative z-10">
+                <h2 class="text-3xl font-bold mb-8 text-center gradient-header">Contact Me</h2>
+                <div class=" rounded-lg glassmorphism p-8 max-w-lg mx-auto custom-shadow">
+                    <form class="space-y-6">
+                        <div>
+                            <label class="block text-gray-300 mb-2">Name</label>
+                            <input type="text" class="w-full p-3 rounded-md bg-gray-800 border border-gray-700 text-white focus:outline-none focus:border-purple-500" placeholder="Your Name">
+                        </div>
+                        <div>
+                            <label class="block text-gray-300 mb-2">Email</label>
+                            <input type="email" class="w-full p-3 rounded-md bg-gray-800 border border-gray-700 text-white focus:outline-none focus:border-purple-500" placeholder="Your Email">
+                        </div>
+                        <div>
+                            <label class="block text-gray-300 mb-2">Message</label>
+                            <textarea rows="4" class="w-full p-3 rounded-md bg-gray-800 border border-gray-700 text-white focus:outline-none focus:border-purple-500" placeholder="Your Message"></textarea>
+                        </div>
+                        <button type="submit" class="gradient-button text-white font-bold py-3 px-6 rounded-md hover:shadow-lg transition duration-300 w-full">
+                            Send Message
+                        </button>
+                    </form>
+                </div>
+            </div>
+             <div class="absolute inset-0 overflow-hidden pointer-events-none">
+                    <div  class="absolute w-64 h-64  bg-purple-500 rounded-full blur-2xl -left-24 bottom-20 animate-pulse-circle" style="opacity: 0.3; "></div>
+                    <div  class="absolute w-64 h-64 bg-blue-500 rounded-full blur-2xl -top-16 right-24 animate-pulse-circle"  style="opacity: 0.3;"></div>
+                </div>
+        </section>
+
+    </main>
+
+    <footer class="text-center py-4 text-gray-500 mt-20">
+        <p>&copy; 2024 José Ícaro. All rights reserved.</p>
+    </footer>
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Hero Section Animations
+        gsap.fromTo("#hero h2", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 1, delay: 0.2, ease: "power3.out", onComplete: () => document.querySelector("#hero h2").style.opacity = 1 });
+        gsap.fromTo("#hero p", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 1, delay: 0.4, ease: "power3.out", onComplete: () => document.querySelector("#hero p").style.opacity = 1 });
+        gsap.fromTo("#hero a", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 1, delay: 0.6, ease: "power3.out", onComplete: () => document.querySelector("#hero a").style.opacity = 1 });
+
+
+        // Parallax effect
+        const parallaxBg = document.querySelector('.parallax-bg');
+        if (parallaxBg) {
+            window.addEventListener('scroll', () => {
+                const scrollY = window.scrollY;
+                parallaxBg.style.transform = `translateY(${scrollY * 0.4}px)`;
+            });
+        }
+
+
+          // Scroll-triggered animations for sections
+        const sections = document.querySelectorAll('section');
+        sections.forEach(section => {
+            gsap.from(section, {
+                opacity: 0,
+                y: 50,
+                duration: 0.8,
+                ease: "power2.out",
+                scrollTrigger: {
+                    trigger: section,
+                    start: "top 80%",
+                  //  markers: true, // For debugging
+                }
+            });
+        });
+
+        // Animation for pulse circles on hero section
+          const pulseCircles = document.querySelectorAll(".animate-pulse-circle");
+          pulseCircles.forEach(circle => {
+             gsap.to(circle,{
+                opacity: 0.6,
+                duration: 3,
+                repeat:-1,
+                yoyo:true,
+                ease: "power2.inOut"
+             })
+           })
+
+
+        });
+
+
+    </script>
+</body>
+</html>
