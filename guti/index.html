@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Esolang Interpreter</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Esolang Interpreter</h1>
+
+    <div class="container">
+        <div class="editor-container">
+            <h2>Code Editor</h2>
+            <textarea id="codeInput" rows="15" placeholder="Enter your esolang code here..."></textarea>
+            <button id="runButton">Run Code</button>
+        </div>
+
+        <div class="output-container">
+            <h2>Output</h2>
+            <pre id="outputArea"></pre>
+        </div>
+
+        <div class="input-container">
+             <h2>Input</h2>
+             <input type="text" id="inputArea" placeholder="Input for ';' command (single char)">
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
