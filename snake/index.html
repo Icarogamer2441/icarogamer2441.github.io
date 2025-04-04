@@ -1,0 +1,120 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snake Programming Language</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">
+                Snake Lang
+                <span class="logo-subtitle">A Python Superset</span>
+            </div>
+            <ul>
+                <li><a href="#features">Features</a></li>
+                <li><a href="https://github.com/Icarogamer2441/snake" target="_blank" rel="noopener noreferrer">Snake Repo</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section id="hero">
+            <div class="hero-content">
+                <h1>Meet <span class="gradient-text">Snake</span></h1>
+                <p>A powerful superset of Python with static typing, structs, enums, and seamless Python integration.</p>
+                <a href="https://github.com/Icarogamer2441/snake" class="cta-button" target="_blank" rel="noopener noreferrer">Get Started</a>
+            </div>
+            <div class="hero-visual">
+                <!-- Placeholder for animation or graphic -->
+                <div class="code-snippet glassmorphism">
+                    <pre><code>
+<span class="code-comment"># Snake struct example</span>
+<span class="code-keyword">struct</span> <span class="code-type">Person</span>:
+    <span class="code-variable">name</span>: <span class="code-type">str</span>;
+    <span class="code-variable">age</span>: <span class="code-type">int</span>;
+    <span class="code-variable">height</span>: <span class="code-type">float</span>;
+
+<span class="code-keyword">def</span> <span class="code-function">greet_person</span>(<span class="code-variable">p</span>: <span class="code-type">Person</span>) -> <span class="code-type">str</span>:
+    <span class="code-keyword">return</span> <span class="code-string">f"Hello, {<span class="code-variable">p</span>.<span class="code-variable">name</span>}! You are {<span class="code-variable">p</span>.<span class="code-variable">age</span>}."</span>
+
+<span class="code-variable">person</span>: <span class="code-type">Person</span> = <span class="code-type">Person</span>(<span class="code-string">"Kate"</span>, <span class="code-number">25</span>, <span class="code-number">1.65</span>)
+<span class="code-function">print</span>(<span class="code-function">greet_person</span>(<span class="code-variable">person</span>))
+                    </code></pre>
+                </div>
+            </div>
+        </section>
+
+        <section id="features">
+            <h2>Why Choose Snake?</h2>
+            <div class="features-grid">
+                <div class="feature-card glassmorphism">
+                    <i class="icon">🐍</i> <!-- Placeholder icon -->
+                    <h3>Python Superset</h3>
+                    <p>Leverage the entire Python ecosystem. All valid Python code is valid Snake code.</p>
+                </div>
+                <div class="feature-card glassmorphism">
+                    <i class="icon">🔒</i> <!-- Placeholder icon -->
+                    <h3>Static Typing</h3>
+                    <p>Catch errors at compile time with optional static type checking.</p>
+                </div>
+                <div class="feature-card glassmorphism">
+                     <i class="icon">🏗️</i> <!-- Placeholder icon -->
+                    <h3>Structs & Enums</h3>
+                    <p>Define complex data structures easily and safely.</p>
+                </div>
+                <div class="feature-card glassmorphism">
+                     <i class="icon">⚙️</i> <!-- Placeholder icon -->
+                    <h3>Python Compilation</h3>
+                    <p>Compile Snake code directly to clean and readable Python code.</p>
+                </div>
+                 <div class="feature-card glassmorphism">
+                     <i class="icon">📚</i> <!-- Placeholder icon -->
+                    <h3>Library Creation</h3>
+                    <p>Build and share your own Snake libraries effortlessly.</p>
+                </div>
+                 <div class="feature-card glassmorphism">
+                     <i class="icon">🤝</i> <!-- Placeholder icon -->
+                    <h3>Python Library Support</h3>
+                    <p>Use your favorite Python libraries directly within Snake.</p>
+                </div>
+                <div class="feature-card glassmorphism">
+                     <i class="icon">✍️</i> <!-- Placeholder icon -->
+                    <h3>Flexible Syntax</h3>
+                    <p>Write Pythonic code with optional semicolons for C/JS style familiarity.</p>
+                </div>
+                 <div class="feature-card glassmorphism">
+                     <i class="icon">⚡</i> <!-- Placeholder icon -->
+                    <h3>Concise Loops</h3>
+                    <p>Utilize powerful syntax like the 'tiny for' loop (e.g., <code>range(10).for()</code>) for cleaner iteration.</p>
+                </div>
+                 <div class="feature-card glassmorphism">
+                     <i class="icon">🛡️</i> <!-- Placeholder icon -->
+                    <h3>Safe Error Handling</h3>
+                    <p>Use the <code>orelse</code> keyword for concise default values on error (e.g., <code>a: int = int("a") orelse 0</code>).</p>
+                </div>
+                <div class="feature-card glassmorphism">
+                     <i class="icon">✨</i> <!-- Placeholder icon -->
+                     <h3>And Much More!</h3>
+                     <p>Discover numerous other features designed to streamline development and enhance your coding experience.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Add more sections for Examples, Docs, Download later -->
+
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Snake Lang. All rights reserved.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
