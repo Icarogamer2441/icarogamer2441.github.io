@@ -1,0 +1,359 @@
+
+:root {
+    --bg-color: #121212;
+    --primary-color: #1a1a1a;
+    --secondary-color: #2a2a2a;
+    --accent-gradient: linear-gradient(90deg, #4f46e5, #c026d3);
+    --text-color: #e0e0e0;
+    --text-muted: #a0a0a0;
+    --glass-bg: rgba(26, 26, 26, 0.5);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --blur-intensity: 10px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    line-height: 1.6;
+    overflow-x: hidden; /* Prevent horizontal scroll */
+}
+
+h1, h2, h3 {
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+p {
+    margin-bottom: 1rem;
+    color: var(--text-muted);
+}
+
+a {
+    color: var(--text-color);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+a:hover {
+    background: var(--accent-gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+
+ul {
+    list-style: none;
+}
+
+img {
+    max-width: 100%;
+    display: block;
+}
+
+header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    background: rgba(18, 18, 18, 0.8); /* Slightly transparent background */
+    backdrop-filter: blur(var(--blur-intensity));
+    -webkit-backdrop-filter: blur(var(--blur-intensity));
+    border-bottom: 1px solid var(--glass-border);
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1rem 2rem;
+}
+
+nav .logo {
+    position: relative; /* Needed for positioning the subtitle */
+    font-size: 1.5rem;
+    font-weight: 700;
+    background: var(--accent-gradient);
+    transition: text-shadow 0.4s ease; /* Add transition for glow */
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    cursor: default; /* Indicate it's not just plain text */
+}
+
+.logo-subtitle {
+    position: absolute;
+    bottom: -18px; /* Position below the logo */
+    left: 50%;
+    transform: translateX(-50%); /* Center the subtitle */
+    font-size: 0.7rem;
+    font-weight: 300;
+    color: var(--text-muted);
+    white-space: nowrap; /* Prevent wrapping */
+    opacity: 0;
+    transition: opacity 0.4s ease, bottom 0.4s ease;
+    pointer-events: none; /* Don't interfere with hover */
+}
+
+nav .logo:hover {
+    /* Add a subtle glow effect using text-shadow */
+    text-shadow: 0 0 8px rgba(79, 70, 229, 0.6), /* Blue glow */
+                 0 0 12px rgba(192, 38, 211, 0.5); /* Pink glow */
+}
+
+nav .logo:hover .logo-subtitle {
+    opacity: 1;
+    bottom: -22px; /* Slightly move down on appear */
+}
+
+
+nav ul {
+    display: flex;
+}
+
+nav ul li {
+    margin-left: 2rem;
+}
+
+main {
+    padding-top: 80px; /* Adjust based on header height */
+}
+
+section {
+    padding: 4rem 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    min-height: 70vh; /* Ensure sections take up space */
+}
+
+/* Hero Section */
+#hero {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+    min-height: calc(100vh - 80px); /* Full viewport height minus header */
+    background: radial-gradient(circle at top left, rgba(79, 70, 229, 0.1), transparent 40%),
+                radial-gradient(circle at bottom right, rgba(192, 38, 211, 0.1), transparent 40%);
+}
+
+.hero-content {
+    flex: 1;
+}
+
+.hero-content h1 {
+    font-size: 3.5rem;
+    margin-bottom: 1rem;
+    line-height: 1.2;
+}
+
+.gradient-text {
+    background: var(--accent-gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.hero-content p {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+    max-width: 500px;
+}
+
+.cta-button {
+    display: inline-block;
+    padding: 0.8rem 2rem;
+    background: var(--accent-gradient);
+    color: white;
+    border-radius: 50px;
+    font-weight: 600;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.cta-button:hover {
+    transform: translateY(-3px);
+    /* Combine existing shadow with a new glow effect using colors from the gradient */
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2),
+                0 0 15px rgba(79, 70, 229, 0.5), /* Blue glow */
+                0 0 25px rgba(192, 38, 211, 0.4); /* Pink glow */
+    color: white; /* Keep text color on hover for buttons */
+    background: linear-gradient(90deg, #5a50f0, #d432e0); /* Slightly lighter gradient on hover */
+}
+
+.hero-visual {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+/* Glassmorphism */
+.glassmorphism {
+    background: var(--glass-bg);
+    border-radius: 15px;
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(var(--blur-intensity));
+    -webkit-backdrop-filter: blur(var(--blur-intensity));
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+}
+
+.code-snippet {
+    max-width: 500px;
+    overflow: hidden;
+}
+
+.code-snippet pre {
+    background: none;
+    padding: 0;
+    margin: 0;
+    overflow-x: auto; /* Enable horizontal scroll if needed */
+}
+
+.code-snippet code {
+    display: block; /* Ensure spans render correctly */
+    color: #c5c8c6; /* Default code text color */
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.95rem; /* Slightly larger font size */
+    line-height: 1.5; /* Adjust line height */
+}
+
+/* Basic Syntax Highlighting */
+.code-comment { color: #75715e; } /* Grey for comments */
+.code-keyword { color: #f92672; } /* Pink/Red for keywords (def, return) */
+.code-function { color: #a6e22e; } /* Green for function names */
+.code-variable { color: #f8f8f2; } /* Near white for variables/params */
+.code-type { color: #66d9ef; } /* Cyan for types (str) */
+.code-string { color: #e6db74; } /* Yellow for strings */
+.code-number { color: #ae81ff; } /* Purple for numbers */
+
+
+/* Features Section */
+#features {
+    background-color: var(--primary-color); /* Slightly different bg */
+}
+
+#features h2 {
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: 3rem;
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+}
+
+.feature-card {
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.feature-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+}
+
+
+.feature-card i.icon {
+    font-size: 2.5rem;
+    display: block;
+    margin-bottom: 1rem;
+    /* Use gradient for icons */
+    background: var(--accent-gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    font-style: normal; /* Prevent italics if using text for icons */
+}
+
+.feature-card h3 {
+    font-size: 1.3rem;
+    margin-bottom: 0.5rem;
+    color: var(--text-color);
+}
+
+.feature-card p {
+    font-size: 0.95rem;
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    padding: 2rem;
+    margin-top: 4rem;
+    background-color: var(--primary-color);
+    border-top: 1px solid var(--glass-border);
+}
+
+footer p {
+    margin-bottom: 0;
+    color: var(--text-muted);
+}
+
+/* Basic Scroll Animation Placeholder */
+/* We will add JS for more complex animations */
+.hidden {
+  opacity: 0;
+  transform: translateY(50px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    nav ul {
+        display: none; /* Hide nav links on smaller screens for simplicity, can add hamburger menu later */
+    }
+
+    #hero {
+        flex-direction: column;
+        text-align: center;
+        padding: 3rem 1rem;
+    }
+
+    .hero-content h1 {
+        font-size: 2.8rem;
+    }
+
+    .hero-content p {
+        font-size: 1rem;
+    }
+
+    .hero-visual {
+        margin-top: 2rem;
+    }
+
+    .code-snippet {
+       max-width: 100%;
+    }
+
+    section {
+        padding: 3rem 1rem;
+    }
+
+    .features-grid {
+        grid-template-columns: 1fr; /* Stack features on mobile */
+    }
+}
