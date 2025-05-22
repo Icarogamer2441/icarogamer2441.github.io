@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSVival Launcher</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="three-container"></div>
+    <div id="launcher-ui">
+        <h1>JSVival Launcher</h1>
+        <p id="message" class="hidden"><p>To exit the game, press CTRL to open the menu inside the game version you're playing</p></p>
+    </div>
+
+    <footer>
+        <div class="version-selector">
+            <label for="version">Select Version:</label>
+            <select id="version">
+                <option value="B1.0">B1.0 (beta 1.0)</option>
+                <option value="B1.1">B1.1 (beta 1.1)</option>
+                <option value="B1.2">B1.2 (beta 1.2)</option>
+            </select>
+            <button id="launch-button">Play</button>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
