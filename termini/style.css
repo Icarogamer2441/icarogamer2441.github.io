@@ -40,10 +40,19 @@ body {
 
 /* Mobile */
 @media (max-width: 768px) {
-    body {
-        font-size: 20px;
-    }
-    #input {
-        font-size: 20px;
-    }
+    body { font-size: 20px; }
+    #input { font-size: 20px; }
+}
+
+#editor-modal button {
+    background:#000;
+    color:#0f0;
+    border:1px solid #0f0;
+    padding:5px 10px;
+    margin:0 5px;
+    cursor:pointer;
+}
+#editor-modal button:hover {
+    background:#0f0;
+    color:#000;
 }
